@@ -2,19 +2,17 @@ import Navbar from "@/components/Navbar";
 import Footer from "@/components/Footer";
 import CarsGrid from "@/components/CarsGrid";
 import { Suspense } from "react";
+import connectDB from "@/lib/mongodb";
+import Car from "@/models/Car";
+import { ICar } from "@/types/car";
 
-async function getCars() {
-  const url = process.env.NEXT_PUBLIC_SITE_URL || "http://localhost:3000";
+async function getCars(): Promise<ICar[]> {
   try {
-    const res = await fetch(`${url}/api/cars`, {
-      cache: "no-store"
-    });
-    if (!res.ok) {
-      throw new Error("Failed to fetch cars");
-    }
-    return res.json();
+    await connectDB();
+    const cars = await Car.find({}).sort({ createdAt: -1 }).lean();
+    return JSON.parse(JSON.stringify(cars));
   } catch (error) {
-    console.error(error);
+    console.error("Failed to fetch cars:", error);
     return [];
   }
 }

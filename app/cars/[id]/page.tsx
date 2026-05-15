@@ -6,25 +6,34 @@ import Footer from "@/components/Footer";
 import CarImageGallery from "@/components/CarImageGallery";
 import ContactForm from "@/components/ContactForm";
 import { ICar } from "@/types/car";
+import connectDB from "@/lib/mongodb";
+import Car from "@/models/Car";
+import mongoose from "mongoose";
 
 async function getCar(id: string): Promise<ICar | null> {
-  const url = process.env.NEXT_PUBLIC_SITE_URL || "http://localhost:3000";
   try {
-    const res = await fetch(`${url}/api/cars/${id}`, { cache: "no-store" });
-    if (!res.ok) return null;
-    return res.json();
+    if (!mongoose.Types.ObjectId.isValid(id)) return null;
+    await connectDB();
+    const car = await Car.findById(id).lean();
+    if (!car) return null;
+    return JSON.parse(JSON.stringify(car));
   } catch (error) {
     console.error(error);
     return null;
   }
 }
 
-async function getSimilarCars(id: string): Promise<ICar[]> {
-  const url = process.env.NEXT_PUBLIC_SITE_URL || "http://localhost:3000";
+async function getSimilarCars(id: string, make: string): Promise<ICar[]> {
   try {
-    const res = await fetch(`${url}/api/cars/similar/${id}`, { cache: "no-store" });
-    if (!res.ok) return [];
-    return res.json();
+    await connectDB();
+    let similar = await Car.find({ _id: { $ne: id }, make }).limit(3).lean();
+    if (similar.length < 3) {
+      const needed = 3 - similar.length;
+      const existingIds = similar.map((c) => c._id);
+      const extra = await Car.find({ _id: { $nin: [id, ...existingIds] } }).limit(needed).lean();
+      similar = [...similar, ...extra];
+    }
+    return JSON.parse(JSON.stringify(similar));
   } catch (error) {
     console.error(error);
     return [];
@@ -38,7 +47,7 @@ export default async function CarDetailPage({ params }: { params: { id: string }
     notFound();
   }
 
-  const similarCars = await getSimilarCars(car._id);
+  const similarCars = await getSimilarCars(car._id, car.make);
 
   return (
     <main className="min-h-screen bg-background text-primary">
@@ -67,10 +76,12 @@ export default async function CarDetailPage({ params }: { params: { id: string }
                 <span className="px-4 py-1.5 rounded-full border border-gold bg-[#1A1A1A] text-sm font-medium">
                   ⚙️ {car.transmission}
                 </span>
-                <span className="px-4 py-1.5 rounded-full border border-gold bg-[#1A1A1A] text-sm font-medium flex items-center">
-                  <span className="w-3 h-3 rounded-full mr-2 bg-gray-500" style={{ backgroundColor: car.color?.toLowerCase() }}></span>
-                  {car.color}
-                </span>
+                {car.color && (
+                  <span className="px-4 py-1.5 rounded-full border border-gold bg-[#1A1A1A] text-sm font-medium flex items-center">
+                    <span className="w-3 h-3 rounded-full mr-2 bg-gray-500" style={{ backgroundColor: car.color.toLowerCase() }}></span>
+                    {car.color}
+                  </span>
+                )}
               </div>
             </div>
             <div className="text-left md:text-right">
@@ -133,15 +144,15 @@ export default async function CarDetailPage({ params }: { params: { id: string }
                     </div>
                     <div className="flex justify-between p-3 bg-[#222]">
                       <span className="text-muted">🎨 Color</span>
-                      <span className="font-medium">{car.color}</span>
+                      <span className="font-medium">{car.color || "—"}</span>
                     </div>
                     <div className="flex justify-between p-3 bg-[#1A1A1A]">
                       <span className="text-muted">💺 Seats</span>
-                      <span className="font-medium">{car.seats || '-'}</span>
+                      <span className="font-medium">{car.seats || "—"}</span>
                     </div>
                     <div className="flex justify-between p-3 bg-[#222]">
                       <span className="text-muted">🔧 Engine</span>
-                      <span className="font-medium">{car.engine || '-'}</span>
+                      <span className="font-medium">{car.engine || "—"}</span>
                     </div>
                   </div>
 
@@ -153,7 +164,7 @@ export default async function CarDetailPage({ params }: { params: { id: string }
                       📞 Call Us Now
                     </a>
                     <a 
-                      href={`https://wa.me/18001234567?text=Hi, I'm interested in the ${car.year} ${car.make} ${car.model} listed for $${car.price.toLocaleString()}`}
+                      href={`https://wa.me/18001234567?text=Hi, I am interested in the ${car.year} ${car.make} ${car.model} listed for $${car.price.toLocaleString()}`}
                       target="_blank"
                       rel="noopener noreferrer" 
                       className="w-full flex justify-center items-center bg-[#25D366] hover:bg-[#20b858] text-white font-bold py-4 px-6 rounded-lg transition-colors text-lg"
@@ -203,7 +214,7 @@ export default async function CarDetailPage({ params }: { params: { id: string }
       </section>
 
       {/* Section 4 - Contact / Enquiry Form */}
-      <section className="py-20">
+      <section id="contact" className="py-20">
         <div className="max-w-3xl mx-auto px-4 sm:px-6 lg:px-8">
           <ContactForm car={car} />
         </div>
