@@ -49,6 +49,18 @@ export default function Navbar() {
     return pathname?.startsWith(path);
   };
 
+  const [wishlistCount, setWishlistCount] = useState(0);
+
+  useEffect(() => {
+    const updateCount = () => {
+      const saved = JSON.parse(localStorage.getItem("autonova_wishlist") || "[]");
+      setWishlistCount(saved.length);
+    };
+    updateCount();
+    window.addEventListener("wishlist-updated", updateCount);
+    return () => window.removeEventListener("wishlist-updated", updateCount);
+  }, []);
+
   return (
     <nav 
       className={`fixed top-0 w-full z-[5000] transition-all duration-500 ${
@@ -86,6 +98,14 @@ export default function Navbar() {
                 )}
               </Link>
             ))}
+            <Link href="/wishlist" className="relative p-2 text-primary hover:text-gold transition-colors">
+              <span className="text-xl">❤️</span>
+              {wishlistCount > 0 && (
+                <span className="absolute -top-1 -right-1 bg-gold text-background text-[10px] font-black w-5 h-5 rounded-full flex items-center justify-center animate-pulse border-2 border-background">
+                  {wishlistCount}
+                </span>
+              )}
+            </Link>
             <Link 
               href="/cars"
               className="bg-gold hover:bg-gold-hover text-background font-bold py-2.5 px-6 rounded-lg transition-all duration-300 transform hover:-translate-y-0.5 shadow-lg active:scale-95"

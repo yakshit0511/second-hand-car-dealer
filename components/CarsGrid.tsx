@@ -6,6 +6,7 @@ import Link from "next/link";
 import { useRouter, useSearchParams } from "next/navigation";
 import { ICar } from "@/types/car";
 import CompareModal from "./CompareModal";
+import WishlistButton from "./WishlistButton";
 
 export default function CarsGrid({ 
   initialCars, 
@@ -29,12 +30,24 @@ export default function CarsGrid({
   const [viewMode, setViewMode] = useState<"grid" | "list">("grid");
   const [compareIds, setCompareIds] = useState<string[]>([]);
   const [isCompareOpen, setIsCompareOpen] = useState(false);
+  const [history, setHistory] = useState<string[]>([]);
+  const [showHistory, setShowHistory] = useState(false);
 
-  // Load view mode from localStorage
+  // Load view mode and history from localStorage
   useEffect(() => {
-    const saved = localStorage.getItem("cars_view_mode") as "grid" | "list";
-    if (saved) setViewMode(saved);
+    const savedView = localStorage.getItem("cars_view_mode") as "grid" | "list";
+    if (savedView) setViewMode(savedView);
+
+    const savedHistory = JSON.parse(localStorage.getItem("autonova_search_history") || "[]");
+    setHistory(savedHistory);
   }, []);
+
+  const saveToHistory = (term: string) => {
+    if (!term.trim()) return;
+    const updated = [term, ...history.filter(h => h !== term)].slice(0, 5);
+    setHistory(updated);
+    localStorage.setItem("autonova_search_history", JSON.stringify(updated));
+  };
 
   // Update URL when filters change
   useEffect(() => {
@@ -136,15 +149,45 @@ export default function CarsGrid({
       {/* Filter Bar Upgraded */}
       <div className="bg-[#1A1A1A]/80 backdrop-blur-xl rounded-2xl border border-gold/20 p-6 mb-8 sticky top-[100px] z-[40] shadow-2xl">
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-6 gap-6 items-end">
-          <div className="flex flex-col">
+          <div className="flex flex-col relative">
             <label className="text-muted text-xs font-bold uppercase tracking-widest mb-2">Search</label>
             <input 
               type="text" 
               placeholder="Make or model..." 
               value={search}
               onChange={(e) => setSearch(e.target.value)}
+              onFocus={() => setShowHistory(true)}
+              onBlur={() => setTimeout(() => setShowHistory(false), 200)}
+              onKeyDown={(e) => e.key === "Enter" && saveToHistory(search)}
               className="bg-background border border-[#2A2A2A] rounded-xl p-3 text-primary focus:border-gold outline-none transition-all"
             />
+            {showHistory && history.length > 0 && (
+              <div className="absolute top-[calc(100%+8px)] left-0 w-full bg-[#1A1A1A] border border-gold/20 rounded-xl p-3 shadow-2xl z-50 animate-fade-in">
+                <p className="text-[10px] text-muted font-bold uppercase tracking-widest mb-2 px-1">Recent Searches</p>
+                <div className="flex flex-wrap gap-2">
+                  {history.map(term => (
+                    <div key={term} className="flex items-center bg-background border border-[#2A2A2A] rounded-lg overflow-hidden">
+                      <button 
+                        onClick={() => { setSearch(term); saveToHistory(term); }}
+                        className="px-3 py-1.5 text-xs text-primary hover:text-gold transition-colors"
+                      >
+                        {term}
+                      </button>
+                      <button 
+                        onClick={() => {
+                          const updated = history.filter(h => h !== term);
+                          setHistory(updated);
+                          localStorage.setItem("autonova_search_history", JSON.stringify(updated));
+                        }}
+                        className="px-2 py-1.5 text-muted hover:text-red-400 border-l border-[#2A2A2A] transition-colors"
+                      >
+                        ✕
+                      </button>
+                    </div>
+                  ))}
+                </div>
+              </div>
+            )}
           </div>
           <div className="flex flex-col">
             <label className="text-muted text-xs font-bold uppercase tracking-widest mb-2">Make</label>
@@ -282,15 +325,7 @@ export default function CarsGrid({
                   sizes="(max-width: 768px) 100vw, 400px"
                 />
                 <div className="absolute top-4 left-4 z-10">
-                  <label className="flex items-center space-x-2 bg-black/60 backdrop-blur-md px-3 py-1.5 rounded-full cursor-pointer hover:bg-black/80 transition-colors border border-white/10">
-                    <input 
-                      type="checkbox" 
-                      checked={compareIds.includes(car._id)}
-                      onChange={() => toggleCompare(car._id)}
-                      className="w-4 h-4 rounded border-gold text-gold focus:ring-gold bg-transparent"
-                    />
-                    <span className="text-[10px] text-white font-bold uppercase tracking-widest">Compare</span>
-                  </label>
+                  <WishlistButton carId={car._id} />
                 </div>
                 {car.isFeatured && (
                   <div className="absolute top-4 right-4 bg-gold text-background text-[10px] font-black px-3 py-1 rounded-full uppercase tracking-[0.1em] shadow-xl">

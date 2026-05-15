@@ -6,9 +6,11 @@ import { usePathname } from "next/navigation";
 
 const navLinks = [
   { href: "/admin", label: "Dashboard", icon: "📊" },
+  { href: "/admin/analytics", label: "Analytics", icon: "📈" },
   { href: "/admin/cars", label: "Manage Cars", icon: "🚗" },
   { href: "/admin/contacts", label: "Contact Submissions", icon: "📩" },
   { href: "/admin/cars/new", label: "Add New Car", icon: "➕" },
+  { href: "/admin/submission", label: "Project Checklist", icon: "✅" },
 ];
 
 function Sidebar({ onClose }: { onClose?: () => void }) {

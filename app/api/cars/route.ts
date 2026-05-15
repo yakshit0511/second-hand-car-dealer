@@ -1,6 +1,7 @@
 import { NextResponse } from "next/server";
 import connectDB from "@/lib/mongodb";
 import Car from "@/models/Car";
+import mongoose from "mongoose";
 
 export async function GET(request: Request) {
   try {
@@ -13,6 +14,14 @@ export async function GET(request: Request) {
     const minPrice = searchParams.get("minPrice");
     const maxPrice = searchParams.get("maxPrice");
     const search = searchParams.get("search");
+    const ids = searchParams.get("ids");
+
+    // Handle specific IDs (for Wishlist)
+    if (ids) {
+      const idArray = ids.split(",").filter(id => mongoose.Types.ObjectId.isValid(id.trim()));
+      const cars = await Car.find({ _id: { $in: idArray } }).lean();
+      return NextResponse.json(cars, { headers: { "Content-Type": "application/json" } });
+    }
 
     const query: any = {};
     
@@ -42,6 +51,7 @@ export async function GET(request: Request) {
       ];
     }
 
+    const cars = await Car.find(query).sort({ createdAt: -1 }).lean();
     return NextResponse.json(cars, { headers: { "Content-Type": "application/json" } });
   } catch (error) {
     console.error("Error fetching cars:", error);
@@ -56,6 +66,7 @@ export async function POST(request: Request) {
   try {
     await connectDB();
     const body = await request.json();
+    const newCar = await Car.create(body);
     return NextResponse.json(newCar, { 
       status: 201, 
       headers: { "Content-Type": "application/json" } 

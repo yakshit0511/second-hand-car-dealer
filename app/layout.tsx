@@ -52,6 +52,9 @@ export const metadata: Metadata = {
   },
 };
 
+import { Toaster } from "react-hot-toast";
+import AIChatWidget from "@/components/AIChatWidget";
+
 export default function RootLayout({
   children,
 }: Readonly<{
@@ -65,8 +68,10 @@ export default function RootLayout({
       <body
         className={`${playfair.variable} ${dmSans.variable} font-body antialiased bg-background text-primary selection:bg-gold selection:text-background`}
       >
+        <Toaster position="top-center" />
         {children}
         <WhatsAppButton />
+        <AIChatWidget />
         <ScrollToTop />
       </body>
     </html>

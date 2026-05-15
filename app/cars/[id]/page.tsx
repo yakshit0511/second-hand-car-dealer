@@ -5,6 +5,7 @@ import Navbar from "@/components/Navbar";
 import Footer from "@/components/Footer";
 import CarImageGallery from "@/components/CarImageGallery";
 import ContactForm from "@/components/ContactForm";
+import WishlistButton from "@/components/WishlistButton";
 import { ICar } from "@/types/car";
 import connectDB from "@/lib/mongodb";
 import Car from "@/models/Car";
@@ -127,9 +128,14 @@ export default async function CarDetailPage({ params }: { params: { id: string }
                   </span>
                 )}
               </div>
-              <h1 className="font-heading text-4xl md:text-5xl lg:text-7xl text-primary mb-4 leading-tight tracking-tighter">
-                {car.year} {car.make} {car.model}
-              </h1>
+              <div className="flex items-center gap-4 mb-4">
+                <h1 className="font-heading text-4xl md:text-5xl lg:text-7xl text-primary leading-tight tracking-tighter">
+                  {car.year} {car.make} {car.model}
+                </h1>
+                <div className="mt-2">
+                  <WishlistButton carId={car._id} />
+                </div>
+              </div>
               
               <div className="flex items-center text-sm text-muted mb-6">
                  <span className="animate-pulse mr-2">👁️</span> 
