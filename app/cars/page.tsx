@@ -2,6 +2,7 @@ import Navbar from "@/components/Navbar";
 import Footer from "@/components/Footer";
 import CarsGrid from "@/components/CarsGrid";
 import { Suspense } from "react";
+import Loading from "./loading";
 import connectDB from "@/lib/mongodb";
 import Car from "@/models/Car";
 import { ICar } from "@/types/car";
@@ -54,11 +55,7 @@ export default async function CarsPage({ searchParams }: PageProps) {
       {/* Main Content */}
       <section className="py-16">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <Suspense fallback={
-            <div className="flex justify-center items-center py-32">
-              <div className="w-16 h-16 border-4 border-[#2A2A2A] border-t-gold rounded-full animate-spin"></div>
-            </div>
-          }>
+          <Suspense fallback={<Loading />}>
             <CarsGrid initialCars={cars} initialSearch={initialSearch} />
           </Suspense>
         </div>

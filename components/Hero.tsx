@@ -2,11 +2,18 @@
 
 import Link from "next/link";
 import { useRouter } from "next/navigation";
-import { useState } from "react";
+import { useState, useEffect, useMemo } from "react";
 
 export default function Hero() {
   const [searchQuery, setSearchQuery] = useState("");
+  const [scrollY, setScrollY] = useState(0);
   const router = useRouter();
+
+  useEffect(() => {
+    const handleScroll = () => setScrollY(window.scrollY);
+    window.addEventListener("scroll", handleScroll);
+    return () => window.removeEventListener("scroll", handleScroll);
+  }, []);
 
   const handleSearch = (e: React.FormEvent) => {
     e.preventDefault();
@@ -17,71 +24,108 @@ export default function Hero() {
     }
   };
 
+  const tags = ["BMW", "Mercedes", "Tesla", "Under $20k", "Automatic"];
+
+  const headline = "Find Your Perfect Ride";
+  const words = useMemo(() => headline.split(" "), []);
+
   return (
     <section 
       id="home"
-      className="relative w-full h-[calc(100vh-80px)] flex items-center justify-center bg-cover bg-center animate-fade-in-up"
-      style={{ backgroundImage: "url('https://images.unsplash.com/photo-1492144534655-ae79c964c9d7?w=1600')" }}
+      className="relative w-full h-screen min-h-[700px] flex items-center justify-center overflow-hidden pt-20"
     >
-      {/* Dark overlay */}
-      <div className="absolute inset-0 bg-black/70 z-0"></div>
+      {/* Parallax Background */}
+      <div 
+        className="absolute inset-0 z-0 scale-110"
+        style={{ 
+          backgroundImage: "url('https://images.unsplash.com/photo-1492144534655-ae79c964c9d7?w=1600')",
+          backgroundSize: 'cover',
+          backgroundPosition: 'center',
+          transform: `translateY(${scrollY * 0.3}px)`
+        }}
+      ></div>
 
-      <div className="relative z-10 text-center px-4 max-w-4xl mx-auto flex flex-col items-center">
-        <span className="bg-background/80 text-gold px-4 py-1 rounded-full text-sm font-medium mb-6 uppercase tracking-wider backdrop-blur-sm border border-gold/30">
-          🏆 Trusted by 5,000+ Happy Customers
+      {/* Shifting Gradient Overlay */}
+      <div className="absolute inset-0 bg-black/60 z-[1] animate-gradient-shift"></div>
+      
+      {/* Animated Glow */}
+      <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[1000px] h-[1000px] bg-gold/5 blur-[150px] rounded-full z-[2] animate-pulse"></div>
+
+      <div className="relative z-10 text-center px-4 max-w-5xl mx-auto flex flex-col items-center">
+        <span className="bg-gold/10 backdrop-blur-md text-gold px-4 py-1.5 rounded-full text-xs font-bold mb-8 uppercase tracking-[0.2em] border border-gold/30 shadow-[0_0_15px_rgba(201,168,76,0.1)] animate-fade-in-up">
+          🏆 New York&apos;s #1 Dealer
         </span>
         
-        <h1 className="font-heading text-5xl md:text-6xl lg:text-[64px] text-primary mb-6 leading-tight">
-          Find Your Perfect <span className="text-gold">Ride</span>
+        <h1 className="font-heading text-5xl md:text-7xl lg:text-[84px] text-white mb-8 leading-[1.1] tracking-tight">
+          {words.map((word, idx) => (
+            <span 
+              key={idx} 
+              className={`inline-block mr-[0.2em] opacity-0 animate-fade-in-up ${word === "Ride" ? "text-gold" : ""}`}
+              style={{ animationDelay: `${400 + idx * 150}ms`, animationFillMode: 'forwards' }}
+            >
+              {word}
+            </span>
+          ))}
         </h1>
         
-        <p className="font-body text-lg md:text-[18px] text-muted mb-10 max-w-2xl">
-          Browse our handpicked collection of premium pre-owned vehicles. Transparency, trust, and great prices — guaranteed.
+        <p 
+          className="font-body text-lg md:text-xl text-white/80 mb-12 max-w-2xl opacity-0 animate-fade-in-up"
+          style={{ animationDelay: '1200ms', animationFillMode: 'forwards' }}
+        >
+          Redefining the pre-owned car experience with luxury standards, 150-point inspections, and white-glove home delivery.
         </p>
         
-        {/* Search Bar */}
-        <form 
-          onSubmit={handleSearch}
-          className="flex w-full max-w-2xl bg-card rounded-full overflow-hidden border border-gold/20 mb-10 shadow-lg focus-within:border-gold transition-colors"
-        >
-          <input 
-            type="text" 
-            placeholder="Search by make, model or keyword..." 
-            value={searchQuery}
-            onChange={(e) => setSearchQuery(e.target.value)}
-            className="flex-grow bg-transparent text-primary px-6 py-4 focus:outline-none placeholder:text-muted"
-          />
-          <button type="submit" className="bg-gold hover:bg-gold-hover text-background font-bold px-8 py-4 transition-colors">
-            Search
-          </button>
-        </form>
+        {/* Search Bar Upgraded */}
+        <div className="w-full max-w-2xl opacity-0 animate-fade-in-up" style={{ animationDelay: '1400ms', animationFillMode: 'forwards' }}>
+          <form 
+            onSubmit={handleSearch}
+            className="flex w-full bg-white/10 backdrop-blur-xl rounded-2xl overflow-hidden border border-white/20 mb-6 shadow-2xl focus-within:border-gold/50 focus-within:bg-white/15 transition-all p-1.5"
+          >
+            <input 
+              type="text" 
+              placeholder="Search by make, model or keyword..." 
+              value={searchQuery}
+              onChange={(e) => setSearchQuery(e.target.value)}
+              className="flex-grow bg-transparent text-white px-6 py-4 focus:outline-none placeholder:text-white/50 text-lg"
+            />
+            <button type="submit" className="bg-gold hover:bg-gold-hover text-background font-bold px-10 py-4 rounded-xl transition-all duration-300 transform active:scale-95 flex items-center">
+              <span>Search</span>
+              <svg className="w-5 h-5 ml-2" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2.5" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"></path></svg>
+            </button>
+          </form>
+
+          {/* Popular Tags */}
+          <div className="flex flex-wrap items-center justify-center gap-3">
+            <span className="text-white/50 text-sm font-medium mr-1">Popular:</span>
+            {tags.map((tag) => (
+              <button
+                key={tag}
+                onClick={() => {
+                  const query = tag === "Under $20k" ? "20000" : tag;
+                  const param = tag === "Under $20k" ? "maxPrice" : "search";
+                  router.push(`/cars?${param}=${encodeURIComponent(query)}`);
+                }}
+                className="bg-white/5 hover:bg-white/10 border border-white/10 hover:border-gold/30 text-white/80 hover:text-gold px-4 py-1 rounded-full text-xs transition-all backdrop-blur-sm"
+              >
+                {tag}
+              </button>
+            ))}
+          </div>
+        </div>
 
         {/* CTA Buttons */}
-        <div className="flex flex-col sm:flex-row gap-4 mb-16">
-          <Link href="/cars" className="bg-gold hover:bg-gold-hover text-background font-bold py-3 px-8 rounded transition-colors text-center">
-            Browse All Cars
+        <div className="flex flex-col sm:flex-row gap-6 mt-16 opacity-0 animate-fade-in-up" style={{ animationDelay: '1600ms', animationFillMode: 'forwards' }}>
+          <Link href="/cars" className="bg-white text-background hover:bg-gold hover:text-background font-bold py-4 px-10 rounded-xl transition-all duration-300 transform hover:-translate-y-1 shadow-xl text-lg min-w-[200px]">
+            Browse Inventory
           </Link>
-          <Link href="#about" className="bg-transparent border border-gold text-gold hover:bg-gold/10 font-bold py-3 px-8 rounded transition-colors text-center">
+          <Link href="#how-it-works" className="bg-transparent border-2 border-white/30 text-white hover:border-gold hover:text-gold font-bold py-4 px-10 rounded-xl transition-all duration-300 backdrop-blur-sm text-lg min-w-[200px]">
             How It Works
           </Link>
         </div>
-
-        {/* Stats */}
-        <div className="flex flex-wrap justify-center gap-8 md:gap-16 text-primary border-t border-gold/20 pt-8 w-full">
-          <div className="flex flex-col items-center">
-            <span className="font-heading text-3xl text-gold font-bold mb-1">500+</span>
-            <span className="text-sm text-muted uppercase tracking-wider">Cars</span>
-          </div>
-          <div className="flex flex-col items-center">
-            <span className="font-heading text-3xl text-gold font-bold mb-1">48hr</span>
-            <span className="text-sm text-muted uppercase tracking-wider">Delivery</span>
-          </div>
-          <div className="flex flex-col items-center">
-            <span className="font-heading text-3xl text-gold font-bold mb-1">1 Year</span>
-            <span className="text-sm text-muted uppercase tracking-wider">Warranty</span>
-          </div>
-        </div>
       </div>
+
+      {/* Decorative Bottom Fade */}
+      <div className="absolute bottom-0 left-0 w-full h-32 bg-gradient-to-t from-background to-transparent z-[2]"></div>
     </section>
   );
 }

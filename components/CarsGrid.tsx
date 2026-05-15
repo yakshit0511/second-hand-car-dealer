@@ -1,10 +1,11 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect, useMemo, useRef } from "react";
 import Image from "next/image";
 import Link from "next/link";
-
+import { useRouter, useSearchParams } from "next/navigation";
 import { ICar } from "@/types/car";
+import CompareModal from "./CompareModal";
 
 export default function CarsGrid({ 
   initialCars, 
@@ -13,23 +14,94 @@ export default function CarsGrid({
   initialCars: ICar[], 
   initialSearch?: string 
 }) {
-  const [make, setMake] = useState("All");
-  const [fuelType, setFuelType] = useState("All");
-  const [transmission, setTransmission] = useState("All");
-  const [minPrice, setMinPrice] = useState("");
-  const [maxPrice, setMaxPrice] = useState("");
-  const [search, setSearch] = useState(initialSearch);
+  const router = useRouter();
+  const searchParams = useSearchParams();
+  const gridRef = useRef<HTMLDivElement>(null);
 
-  const filteredCars = initialCars.filter((car) => {
-    let match = true;
-    if (make !== "All" && car.make !== make) match = false;
-    if (fuelType !== "All" && car.fuelType !== fuelType) match = false;
-    if (transmission !== "All" && car.transmission !== transmission) match = false;
-    if (minPrice && car.price < Number(minPrice)) match = false;
-    if (maxPrice && car.price > Number(maxPrice)) match = false;
-    if (search && !car.make.toLowerCase().includes(search.toLowerCase()) && !car.model.toLowerCase().includes(search.toLowerCase())) match = false;
-    return match;
-  });
+  // States from URL or Defaults
+  const [make, setMake] = useState(searchParams.get("make") || "All");
+  const [fuelType, setFuelType] = useState(searchParams.get("fuelType") || "All");
+  const [transmission, setTransmission] = useState(searchParams.get("transmission") || "All");
+  const [minPrice, setMinPrice] = useState(searchParams.get("minPrice") || "");
+  const [maxPrice, setMaxPrice] = useState(searchParams.get("maxPrice") || "");
+  const [search, setSearch] = useState(searchParams.get("search") || initialSearch);
+  const [sortBy, setSortBy] = useState("Newest First");
+  const [viewMode, setViewMode] = useState<"grid" | "list">("grid");
+  const [compareIds, setCompareIds] = useState<string[]>([]);
+  const [isCompareOpen, setIsCompareOpen] = useState(false);
+
+  // Load view mode from localStorage
+  useEffect(() => {
+    const saved = localStorage.getItem("cars_view_mode") as "grid" | "list";
+    if (saved) setViewMode(saved);
+  }, []);
+
+  // Update URL when filters change
+  useEffect(() => {
+    const params = new URLSearchParams();
+    if (make !== "All") params.set("make", make);
+    if (fuelType !== "All") params.set("fuelType", fuelType);
+    if (transmission !== "All") params.set("transmission", transmission);
+    if (minPrice) params.set("minPrice", minPrice);
+    if (maxPrice) params.set("maxPrice", maxPrice);
+    if (search) params.set("search", search);
+    
+    const query = params.toString();
+    router.push(`/cars${query ? `?${query}` : ""}`, { scroll: false });
+  }, [make, fuelType, transmission, minPrice, maxPrice, search, router]);
+
+  // Intersection Observer for scroll reveal
+  useEffect(() => {
+    const observer = new IntersectionObserver(
+      (entries) => {
+        entries.forEach((entry) => {
+          if (entry.isIntersecting) {
+            entry.target.classList.add("animate-fade-in-up");
+            entry.target.classList.remove("opacity-0");
+          }
+        });
+      },
+      { threshold: 0.1 }
+    );
+
+    if (gridRef.current) {
+      const cards = gridRef.current.querySelectorAll(".car-item-card");
+      cards.forEach((card) => observer.observe(card));
+    }
+
+    return () => observer.disconnect();
+  }, [make, fuelType, transmission, minPrice, maxPrice, search, sortBy]);
+
+  const filteredAndSortedCars = useMemo(() => {
+    let result = initialCars.filter((car) => {
+      let match = true;
+      if (make !== "All" && car.make !== make) match = false;
+      if (fuelType !== "All" && car.fuelType !== fuelType) match = false;
+      if (transmission !== "All" && car.transmission !== transmission) match = false;
+      if (minPrice && car.price < Number(minPrice)) match = false;
+      if (maxPrice && car.price > Number(maxPrice)) match = false;
+      if (search && !car.make.toLowerCase().includes(search.toLowerCase()) && !car.model.toLowerCase().includes(search.toLowerCase())) match = false;
+      return match;
+    });
+
+    // Sorting logic
+    switch (sortBy) {
+      case "Price: Low to High":
+        result.sort((a, b) => a.price - b.price);
+        break;
+      case "Price: High to Low":
+        result.sort((a, b) => b.price - a.price);
+        break;
+      case "Mileage: Low to High":
+        result.sort((a, b) => a.mileage - b.mileage);
+        break;
+      case "Newest First":
+      default:
+        result.sort((a, b) => b.year - a.year);
+    }
+
+    return result;
+  }, [initialCars, make, fuelType, transmission, minPrice, maxPrice, search, sortBy]);
 
   const clearFilters = () => {
     setMake("All");
@@ -40,27 +112,46 @@ export default function CarsGrid({
     setSearch("");
   };
 
+  const activeFilters = useMemo(() => {
+    const filters = [];
+    if (make !== "All") filters.push({ type: "make", label: make, clear: () => setMake("All") });
+    if (fuelType !== "All") filters.push({ type: "fuelType", label: fuelType, clear: () => setFuelType("All") });
+    if (transmission !== "All") filters.push({ type: "transmission", label: transmission, clear: () => setTransmission("All") });
+    if (search) filters.push({ type: "search", label: `Search: ${search}`, clear: () => setSearch("") });
+    return filters;
+  }, [make, fuelType, transmission, search]);
+
+  const toggleCompare = (id: string) => {
+    setCompareIds(prev => {
+      if (prev.includes(id)) return prev.filter(i => i !== id);
+      if (prev.length < 2) return [...prev, id];
+      return [prev[1], id]; // Replace oldest if more than 2
+    });
+  };
+
+  const compareCars = initialCars.filter(c => compareIds.includes(c._id));
+
   return (
-    <div>
-      {/* Filter Bar */}
-      <div className="bg-card rounded-xl border border-[#2A2A2A] p-4 md:p-6 mb-8 sticky top-[80px] z-40 shadow-lg">
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-6 gap-4 items-end">
+    <div className="relative pb-24">
+      {/* Filter Bar Upgraded */}
+      <div className="bg-[#1A1A1A]/80 backdrop-blur-xl rounded-2xl border border-gold/20 p-6 mb-8 sticky top-[100px] z-[40] shadow-2xl">
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-6 gap-6 items-end">
           <div className="flex flex-col">
-            <label className="text-muted text-sm mb-1">Search</label>
+            <label className="text-muted text-xs font-bold uppercase tracking-widest mb-2">Search</label>
             <input 
               type="text" 
               placeholder="Make or model..." 
               value={search}
               onChange={(e) => setSearch(e.target.value)}
-              className="bg-background border border-[#2A2A2A] rounded p-2 text-primary focus:border-gold outline-none"
+              className="bg-background border border-[#2A2A2A] rounded-xl p-3 text-primary focus:border-gold outline-none transition-all"
             />
           </div>
           <div className="flex flex-col">
-            <label className="text-muted text-sm mb-1">Make</label>
+            <label className="text-muted text-xs font-bold uppercase tracking-widest mb-2">Make</label>
             <select 
               value={make} 
               onChange={(e) => setMake(e.target.value)}
-              className="bg-background border border-[#2A2A2A] rounded p-2 text-primary focus:border-gold outline-none"
+              className="bg-background border border-[#2A2A2A] rounded-xl p-3 text-primary focus:border-gold outline-none appearance-none cursor-pointer"
             >
               <option value="All">All Makes</option>
               {["BMW", "Mercedes", "Audi", "Toyota", "Ford", "Tesla", "Honda", "Volkswagen", "Hyundai"].map(m => (
@@ -69,11 +160,11 @@ export default function CarsGrid({
             </select>
           </div>
           <div className="flex flex-col">
-            <label className="text-muted text-sm mb-1">Fuel Type</label>
+            <label className="text-muted text-xs font-bold uppercase tracking-widest mb-2">Fuel Type</label>
             <select 
               value={fuelType} 
               onChange={(e) => setFuelType(e.target.value)}
-              className="bg-background border border-[#2A2A2A] rounded p-2 text-primary focus:border-gold outline-none"
+              className="bg-background border border-[#2A2A2A] rounded-xl p-3 text-primary focus:border-gold outline-none cursor-pointer"
             >
               <option value="All">All Fuels</option>
               {["Petrol", "Diesel", "Hybrid", "Electric"].map(f => (
@@ -82,123 +173,219 @@ export default function CarsGrid({
             </select>
           </div>
           <div className="flex flex-col">
-            <label className="text-muted text-sm mb-1">Transmission</label>
+            <label className="text-muted text-xs font-bold uppercase tracking-widest mb-2">Sort By</label>
             <select 
-              value={transmission} 
-              onChange={(e) => setTransmission(e.target.value)}
-              className="bg-background border border-[#2A2A2A] rounded p-2 text-primary focus:border-gold outline-none"
+              value={sortBy} 
+              onChange={(e) => setSortBy(e.target.value)}
+              className="bg-background border border-gold/30 rounded-xl p-3 text-gold font-bold focus:border-gold outline-none cursor-pointer"
             >
-              <option value="All">All Transmissions</option>
-              {["Automatic", "Manual"].map(t => (
-                <option key={t} value={t}>{t}</option>
+              {["Newest First", "Price: Low to High", "Price: High to Low", "Mileage: Low to High"].map(s => (
+                <option key={s} value={s}>{s}</option>
               ))}
             </select>
           </div>
           <div className="flex flex-col">
-            <label className="text-muted text-sm mb-1">Price Range</label>
+            <label className="text-muted text-xs font-bold uppercase tracking-widest mb-2">Price Range</label>
             <div className="flex space-x-2">
               <input 
                 type="number" 
                 placeholder="Min" 
                 value={minPrice}
                 onChange={(e) => setMinPrice(e.target.value)}
-                className="bg-background border border-[#2A2A2A] rounded p-2 text-primary focus:border-gold outline-none w-full"
+                className="bg-background border border-[#2A2A2A] rounded-xl p-3 text-primary focus:border-gold outline-none w-full"
               />
               <input 
                 type="number" 
                 placeholder="Max" 
                 value={maxPrice}
                 onChange={(e) => setMaxPrice(e.target.value)}
-                className="bg-background border border-[#2A2A2A] rounded p-2 text-primary focus:border-gold outline-none w-full"
+                className="bg-background border border-[#2A2A2A] rounded-xl p-3 text-primary focus:border-gold outline-none w-full"
               />
             </div>
           </div>
-          <div className="flex flex-col justify-end">
-            <button 
-              onClick={clearFilters}
-              className="bg-transparent border border-gold text-gold hover:bg-gold hover:text-background font-bold p-2 rounded transition-colors w-full h-[42px]"
-            >
-              Clear Filters
-            </button>
+          <div className="flex flex-col">
+             <button 
+                onClick={clearFilters}
+                className="bg-transparent border border-gold/30 text-muted hover:text-gold hover:border-gold font-bold p-3 rounded-xl transition-all"
+              >
+                Clear Filters
+              </button>
           </div>
         </div>
       </div>
 
-      <div className="mb-6">
-        <p className="text-muted">Showing {filteredCars.length} of {initialCars.length} vehicles</p>
+      {/* Toolbar */}
+      <div className="flex flex-col md:flex-row justify-between items-center mb-10 gap-6">
+        <div>
+          <p className="text-muted">Showing <span className="text-primary font-bold">{filteredAndSortedCars.length}</span> of {initialCars.length} vehicles</p>
+          <div className="flex flex-wrap gap-2 mt-4">
+            {activeFilters.map(filter => (
+              <span key={filter.type} className="flex items-center bg-gold/10 border border-gold/20 text-gold px-3 py-1 rounded-full text-xs font-bold">
+                {filter.label}
+                <button onClick={filter.clear} className="ml-2 hover:text-white">✕</button>
+              </span>
+            ))}
+          </div>
+        </div>
+        
+        <div className="flex items-center gap-4 bg-[#1A1A1A] p-1 rounded-xl border border-[#2A2A2A]">
+          <button 
+            onClick={() => { setViewMode("grid"); localStorage.setItem("cars_view_mode", "grid"); }}
+            className={`p-2 rounded-lg transition-all ${viewMode === "grid" ? "bg-gold text-background shadow-lg" : "text-muted hover:text-white"}`}
+            aria-label="Grid View"
+          >
+            <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M4 6a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2H6a2 2 0 01-2-2V6zM14 6a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2h-2a2 2 0 01-2-2V6zM4 16a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2H6a2 2 0 01-2-2v-2zM14 16a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2h-2a2 2 0 01-2-2v-2z"></path></svg>
+          </button>
+          <button 
+            onClick={() => { setViewMode("list"); localStorage.setItem("cars_view_mode", "list"); }}
+            className={`p-2 rounded-lg transition-all ${viewMode === "list" ? "bg-gold text-background shadow-lg" : "text-muted hover:text-white"}`}
+            aria-label="List View"
+          >
+            <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M4 6h16M4 12h16M4 18h16"></path></svg>
+          </button>
+        </div>
       </div>
 
-      {filteredCars.length === 0 ? (
-        <div className="text-center py-20 bg-card rounded-xl border border-[#2A2A2A]">
-          <div className="text-6xl mb-4">🚗</div>
-          <h3 className="text-primary font-heading text-2xl mb-2">No vehicles found matching your criteria</h3>
-          <p className="text-muted mb-6">Try adjusting your filters or clearing them to see more vehicles.</p>
+      {filteredAndSortedCars.length === 0 ? (
+        <div className="text-center py-20 bg-card rounded-2xl border border-[#2A2A2A] animate-fade-in">
+          <div className="text-8xl mb-6 grayscale opacity-20">🚗</div>
+          <h3 className="text-primary font-heading text-3xl mb-4">No matching vehicles</h3>
+          <p className="text-muted mb-8 text-lg">Try adjusting your filters to find your perfect car.</p>
           <button 
             onClick={clearFilters}
-            className="bg-gold hover:bg-gold-hover text-background font-bold py-2 px-6 rounded transition-colors"
+            className="bg-gold hover:bg-gold-hover text-background font-bold py-4 px-10 rounded-xl transition-all shadow-xl shadow-gold/20"
           >
-            Clear Filters
+            Reset All Filters
           </button>
         </div>
       ) : (
-        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-8">
-          {filteredCars.map((car) => (
+        <div 
+          ref={gridRef}
+          className={viewMode === "grid" 
+            ? "grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-8" 
+            : "flex flex-col gap-6"
+          }
+        >
+          {filteredAndSortedCars.map((car) => (
             <div 
               key={car._id} 
-              className="bg-card rounded-xl overflow-hidden border border-[#2A2A2A] hover:border-gold hover:-translate-y-1 hover:shadow-[0_8px_30px_rgba(201,168,76,0.15)] transition-all duration-300 group"
+              className={`car-item-card opacity-0 group bg-card rounded-2xl overflow-hidden border border-[#2A2A2A] hover:border-gold transition-all duration-500 shadow-xl ${
+                viewMode === "list" ? "flex flex-col md:flex-row h-auto md:h-[260px]" : ""
+              }`}
             >
-              <div className="relative h-[220px] w-full">
+              <div className={`relative ${viewMode === "list" ? "w-full md:w-[350px] h-[220px] md:h-full" : "h-[240px] w-full"}`}>
                 <Image 
-                  src={car.images[0] || "https://images.unsplash.com/photo-1555215695-3004980ad54e?w=600"} 
+                  src={car.images[0] || "/placeholder.jpg"} 
                   alt={`${car.make} ${car.model}`} 
                   fill 
-                  className="object-cover"
+                  className="object-cover transition-transform duration-700 group-hover:scale-110"
+                  sizes="(max-width: 768px) 100vw, 400px"
                 />
+                <div className="absolute top-4 left-4 z-10">
+                  <label className="flex items-center space-x-2 bg-black/60 backdrop-blur-md px-3 py-1.5 rounded-full cursor-pointer hover:bg-black/80 transition-colors border border-white/10">
+                    <input 
+                      type="checkbox" 
+                      checked={compareIds.includes(car._id)}
+                      onChange={() => toggleCompare(car._id)}
+                      className="w-4 h-4 rounded border-gold text-gold focus:ring-gold bg-transparent"
+                    />
+                    <span className="text-[10px] text-white font-bold uppercase tracking-widest">Compare</span>
+                  </label>
+                </div>
                 {car.isFeatured && (
-                  <div className="absolute top-4 left-4 bg-gold text-background text-xs font-bold px-3 py-1 rounded-full uppercase tracking-wider flex items-center shadow-lg">
-                    ⭐ Featured
+                  <div className="absolute top-4 right-4 bg-gold text-background text-[10px] font-black px-3 py-1 rounded-full uppercase tracking-[0.1em] shadow-xl">
+                    Featured
                   </div>
                 )}
               </div>
               
-              <div className="p-6">
-                <h3 className="font-heading text-xl text-primary mb-2 group-hover:text-gold transition-colors truncate">
-                  {car.year} {car.make} {car.model}
-                </h3>
-                <div className="text-gold text-2xl font-bold mb-4">
-                  ${car.price.toLocaleString()}
+              <div className={`p-6 flex flex-col flex-grow ${viewMode === "list" ? "md:justify-center" : ""}`}>
+                <div className="flex justify-between items-start mb-2">
+                  <h3 className="font-heading text-2xl text-primary group-hover:text-gold transition-colors truncate">
+                    {car.year} {car.make} {car.model}
+                  </h3>
+                </div>
+                <div className="text-gold text-3xl font-black mb-6">${car.price.toLocaleString()}</div>
+                
+                <div className="grid grid-cols-3 gap-2 mb-6 pt-4 border-t border-[#2A2A2A]">
+                  <div className="flex flex-col items-center">
+                    <span className="text-xl mb-1 group-hover:scale-125 transition-transform duration-300">🛣️</span>
+                    <span className="text-[10px] text-muted font-bold uppercase">{car.mileage.toLocaleString()} mi</span>
+                  </div>
+                  <div className="flex flex-col items-center border-x border-[#2A2A2A]">
+                    <span className="text-xl mb-1 group-hover:scale-125 transition-transform duration-300">⛽</span>
+                    <span className="text-[10px] text-muted font-bold uppercase">{car.fuelType}</span>
+                  </div>
+                  <div className="flex flex-col items-center">
+                    <span className="text-xl mb-1 group-hover:scale-125 transition-transform duration-300">⚙️</span>
+                    <span className="text-[10px] text-muted font-bold uppercase">{car.transmission}</span>
+                  </div>
                 </div>
                 
-                <div className="flex justify-between items-center mb-6 pt-4 border-t border-[#2A2A2A]">
-                  <div className="flex flex-col items-center flex-1">
-                    <span className="text-lg mb-1">🛣️</span>
-                    <span className="text-xs text-muted">{car.mileage.toLocaleString()} mi</span>
-                  </div>
-                  <div className="flex flex-col items-center flex-1 border-x border-[#2A2A2A]">
-                    <span className="text-lg mb-1">⛽</span>
-                    <span className="text-xs text-muted">{car.fuelType}</span>
-                  </div>
-                  <div className="flex flex-col items-center flex-1">
-                    <span className="text-lg mb-1">⚙️</span>
-                    <span className="text-xs text-muted">{car.transmission}</span>
-                  </div>
-                </div>
-
-                <div className="flex items-center mb-6">
-                  <span 
-                    className="w-3 h-3 rounded-full mr-2 border border-[#2A2A2A]"
-                    style={{ backgroundColor: car.color?.toLowerCase() || 'gray' }}
-                  ></span>
-                  <span className="text-sm text-muted">{car.color}</span>
-                </div>
-                
-                <Link href={`/cars/${car._id}`} className="block w-full py-3 rounded border border-gold text-gold font-bold hover:bg-gold hover:text-background transition-colors duration-300 text-center">
-                  View Details &rarr;
+                <Link 
+                  href={`/cars/${car._id}`} 
+                  className="block w-full py-4 rounded-xl border border-gold/30 text-gold font-bold hover:bg-gold hover:text-background transition-all duration-300 text-center shadow-lg active:scale-95"
+                >
+                  View Full Details &rarr;
                 </Link>
               </div>
             </div>
           ))}
         </div>
+      )}
+
+      {/* Sticky Compare Bar */}
+      {compareIds.length > 0 && (
+        <div className="fixed bottom-24 left-1/2 -translate-x-1/2 z-[100] w-[calc(100%-2rem)] max-w-2xl animate-fade-in-up">
+          <div className="bg-[#1A1A1A]/95 backdrop-blur-xl border-2 border-gold/30 rounded-2xl p-4 shadow-[0_20px_50px_rgba(0,0,0,0.5)] flex items-center justify-between">
+            <div className="flex items-center gap-4">
+              <div className="flex -space-x-3">
+                {compareCars.map(c => (
+                  <div key={c._id} className="w-12 h-12 rounded-lg border-2 border-gold overflow-hidden bg-background">
+                    <img src={c.images[0]} alt={c.model} className="w-full h-full object-cover" />
+                  </div>
+                ))}
+                {compareIds.length === 1 && (
+                  <div className="w-12 h-12 rounded-lg border-2 border-dashed border-gold/30 flex items-center justify-center text-gold/30 text-xs text-center font-bold px-1">
+                    Add 1 more
+                  </div>
+                )}
+              </div>
+              <div className="hidden sm:block">
+                <p className="text-white font-bold text-sm">Compare Vehicles</p>
+                <p className="text-muted text-xs">{compareIds.length === 1 ? "Select one more car" : "Ready to compare specs"}</p>
+              </div>
+            </div>
+            
+            <div className="flex items-center gap-3">
+              <button 
+                onClick={() => setCompareIds([])}
+                className="text-muted hover:text-white text-xs font-bold uppercase tracking-widest px-4 py-2"
+              >
+                Clear
+              </button>
+              <button 
+                onClick={() => setIsCompareOpen(true)}
+                disabled={compareIds.length < 2}
+                className={`py-3 px-8 rounded-xl font-bold transition-all ${
+                  compareIds.length === 2 
+                    ? "bg-gold text-background hover:bg-gold-hover shadow-lg shadow-gold/20" 
+                    : "bg-[#2A2A2A] text-muted cursor-not-allowed"
+                }`}
+              >
+                Compare Now
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
+
+      {/* Modal */}
+      {isCompareOpen && (
+        <CompareModal 
+          cars={compareCars} 
+          onClose={() => setIsCompareOpen(false)} 
+        />
       )}
     </div>
   );

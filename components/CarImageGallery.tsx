@@ -20,22 +20,39 @@ export default function CarImageGallery({ images }: { images: string[] }) {
   return (
     <div className="w-full">
       {/* Main Image */}
-      <div className="relative w-full h-[480px] rounded-lg overflow-hidden bg-card mb-4 group">
+      <div className="relative w-full h-[320px] md:h-[540px] rounded-2xl overflow-hidden bg-card mb-6 group border border-[#2A2A2A] shadow-2xl">
         <Image 
           src={images[activeIndex]} 
           alt="Car Image" 
           fill 
-          className="object-cover transition-opacity duration-500"
+          className="object-cover transition-all duration-700 group-hover:scale-105"
           priority
+          sizes="(max-width: 768px) 100vw, (max-width: 1200px) 70vw, 800px"
         />
         
+        {/* Navigation Arrows (Desktop) */}
+        <div className="absolute inset-0 flex items-center justify-between p-4 opacity-0 group-hover:opacity-100 transition-opacity pointer-events-none">
+          <button 
+            onClick={(e) => { e.stopPropagation(); prevImage(); }}
+            className="pointer-events-auto bg-black/50 hover:bg-gold text-white hover:text-background p-3 rounded-xl transition-all backdrop-blur-sm"
+          >
+            <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M15 19l-7-7 7-7" /></svg>
+          </button>
+          <button 
+            onClick={(e) => { e.stopPropagation(); nextImage(); }}
+            className="pointer-events-auto bg-black/50 hover:bg-gold text-white hover:text-background p-3 rounded-xl transition-all backdrop-blur-sm"
+          >
+            <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M9 5l7 7-7 7" /></svg>
+          </button>
+        </div>
+
         {/* Fullscreen Button */}
         <button 
           onClick={() => setIsLightboxOpen(true)}
-          className="absolute top-4 right-4 bg-black/50 hover:bg-black/80 text-white p-2 rounded-full transition-colors z-10"
+          className="absolute bottom-6 right-6 bg-black/50 hover:bg-gold text-white hover:text-background p-3 rounded-xl transition-all z-10 backdrop-blur-md"
           aria-label="View Fullscreen"
         >
-          <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
             <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0zM10 7v3m0 0v3m0-3h3m-3 0H7" />
           </svg>
         </button>
@@ -43,14 +60,20 @@ export default function CarImageGallery({ images }: { images: string[] }) {
 
       {/* Thumbnails */}
       {images.length > 1 && (
-        <div className="grid grid-cols-4 sm:grid-cols-5 md:grid-cols-6 gap-3">
+        <div className="grid grid-cols-4 sm:grid-cols-5 md:grid-cols-6 gap-4">
           {images.map((img, index) => (
             <div 
               key={index}
               onClick={() => setActiveIndex(index)}
-              className={`relative h-[90px] rounded-md overflow-hidden cursor-pointer transition-all duration-200 ${activeIndex === index ? 'border-2 border-gold scale-105' : 'border border-[#2A2A2A] opacity-70 hover:opacity-100'}`}
+              className={`relative h-[70px] md:h-[90px] rounded-xl overflow-hidden cursor-pointer transition-all duration-300 ${activeIndex === index ? 'ring-2 ring-gold scale-105 shadow-lg shadow-gold/20' : 'opacity-50 hover:opacity-100 grayscale hover:grayscale-0'}`}
             >
-              <Image src={img} alt={`Thumbnail ${index + 1}`} fill className="object-cover" />
+              <Image 
+                src={img} 
+                alt={`Thumbnail ${index + 1}`} 
+                fill 
+                className="object-cover" 
+                sizes="150px"
+              />
             </div>
           ))}
         </div>

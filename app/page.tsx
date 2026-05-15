@@ -1,25 +1,21 @@
 import Navbar from "@/components/Navbar";
 import Hero from "@/components/Hero";
 import FeaturedCars from "@/components/FeaturedCars";
+import HowItWorks from "@/components/HowItWorks";
 import WhyChooseUs from "@/components/WhyChooseUs";
+import Newsletter from "@/components/Newsletter";
 import Footer from "@/components/Footer";
 import connectDB from "@/lib/mongodb";
 import Car from "@/models/Car";
 import { ICar } from "@/types/car";
-import type { Metadata } from "next";
 
 export const dynamic = "force-dynamic";
 export const revalidate = 0;
 
-export const metadata: Metadata = {
-  title: "AutoNova Motors | Premium Pre-Owned Vehicles",
-  description: "Find your perfect ride at AutoNova Motors. Browse our certified luxury inventory.",
-};
-
 async function getFeaturedCars(): Promise<ICar[]> {
   try {
     await connectDB();
-    // Fetch cars marked as featured, limit to 6, sort by most recent
+    // Only fetch cars where isFeatured: true
     const cars = await Car.find({ isFeatured: true }).sort({ createdAt: -1 }).limit(6).lean();
     return JSON.parse(JSON.stringify(cars));
   } catch (error) {
@@ -32,11 +28,13 @@ export default async function Home() {
   const featuredCars = await getFeaturedCars();
 
   return (
-    <main className="min-h-screen bg-background text-primary">
+    <main className="min-h-screen bg-background text-primary selection:bg-gold selection:text-background">
       <Navbar />
       <Hero />
       <FeaturedCars cars={featuredCars} />
+      <HowItWorks />
       <WhyChooseUs />
+      <Newsletter />
       <Footer />
     </main>
   );
