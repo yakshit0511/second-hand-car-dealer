@@ -147,8 +147,8 @@ export default function CarsGrid({
   return (
     <div className="relative pb-24">
       {/* Filter Bar Upgraded */}
-      <div className="bg-[#1A1A1A]/80 backdrop-blur-xl rounded-2xl border border-gold/20 p-6 mb-8 sticky top-[100px] z-[40] shadow-2xl">
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-6 gap-6 items-end">
+      <div className="bg-[#1A1A1A]/80 backdrop-blur-xl rounded-2xl border border-gold/20 p-6 mb-8 sticky top-[100px] z-[40] shadow-2xl overflow-x-auto scrollbar-thin scrollbar-thumb-gold/20">
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-6 gap-6 items-end min-w-[1000px] xl:min-w-0">
           <div className="flex flex-col relative">
             <label className="text-muted text-xs font-bold uppercase tracking-widest mb-2">Search</label>
             <input 

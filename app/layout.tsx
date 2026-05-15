@@ -70,7 +70,6 @@ export default function RootLayout({
       >
         <Toaster position="top-center" />
         {children}
-        <WhatsAppButton />
         <AIChatWidget />
         <ScrollToTop />
       </body>

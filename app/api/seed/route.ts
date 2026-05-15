@@ -7,129 +7,138 @@ export const dynamic = "force-dynamic";
 const dummyCars = [
   {
     make: "BMW",
-    model: "3 Series",
+    model: "M4 Competition",
     year: 2021,
-    price: 24500,
-    mileage: 32000,
+    price: 65000,
+    mileage: 12000,
     fuelType: "Petrol",
     transmission: "Automatic",
-    color: "Black",
-    seats: 5,
-    engine: "2.0L Turbo",
-    isFeatured: true,
-    images: ["https://images.unsplash.com/photo-1555215695-3004980ad54e?w=800", "https://images.unsplash.com/photo-1556189250-72ba954cfc2b?w=800", "https://images.unsplash.com/photo-1503376780353-7e6692767b70?w=800"]
-  },
-  {
-    make: "Mercedes",
-    model: "C-Class",
-    year: 2020,
-    price: 27900,
-    mileage: 28000,
-    fuelType: "Diesel",
-    transmission: "Automatic",
-    color: "Silver",
-    seats: 5,
-    engine: "2.0L Diesel",
-    isFeatured: true,
-    images: ["https://images.unsplash.com/photo-1544636331-e26879cd4d9b?w=800", "https://images.unsplash.com/photo-1618843479313-40f8afb4b4d8?w=800", "https://images.unsplash.com/photo-1563720223809-b2a83f2c0de2?w=800"]
-  },
-  {
-    make: "Audi",
-    model: "A4",
-    year: 2019,
-    price: 21000,
-    mileage: 45000,
-    fuelType: "Petrol",
-    transmission: "Automatic",
-    color: "White",
-    seats: 5,
-    engine: "2.0L TFSI",
-    isFeatured: true,
-    images: ["https://images.unsplash.com/photo-1553440569-bcc63803a83d?w=800", "https://images.unsplash.com/photo-1502877338535-766e1452684a?w=800", "https://images.unsplash.com/photo-1606664515524-ed2f786a0bd6?w=600"]
-  },
-  {
-    make: "Toyota",
-    model: "Camry",
-    year: 2022,
-    price: 18500,
-    mileage: 15000,
-    fuelType: "Hybrid",
-    transmission: "Automatic",
-    color: "Blue",
-    seats: 5,
-    engine: "2.5L Hybrid",
-    isFeatured: false,
-    images: ["https://images.unsplash.com/photo-1606664515524-ed2f786a0bd6?w=800", "https://images.unsplash.com/photo-1555215695-3004980ad54e?w=800", "https://images.unsplash.com/photo-1502877338535-766e1452684a?w=800"]
-  },
-  {
-    make: "Ford",
-    model: "Mustang",
-    year: 2018,
-    price: 22000,
-    mileage: 55000,
-    fuelType: "Petrol",
-    transmission: "Manual",
-    color: "Red",
-    seats: 4,
-    engine: "5.0L V8",
-    isFeatured: false,
-    images: ["https://images.unsplash.com/photo-1502877338535-766e1452684a?w=800", "https://images.unsplash.com/photo-1553440569-bcc63803a83d?w=800", "https://images.unsplash.com/photo-1555215695-3004980ad54e?w=800"]
+    engineSize: "3.0L",
+    color: "Isle of Man Green",
+    description: "Stunning M4 Competition in Isle of Man Green. Full carbon fiber package, laser lights, and executive package.",
+    features: ["Carbon Fiber Seats", "Harman Kardon Sound", "Heated Steering Wheel", "Head-up Display"],
+    images: ["https://images.unsplash.com/photo-1617531653332-bd46c24f2068?auto=format&fit=crop&w=800&q=80"],
+    isFeatured: true
   },
   {
     make: "Tesla",
-    model: "Model 3",
-    year: 2021,
-    price: 31000,
-    mileage: 20000,
+    model: "Model 3 Performance",
+    year: 2022,
+    price: 45000,
+    mileage: 8000,
     fuelType: "Electric",
     transmission: "Automatic",
-    color: "White",
-    seats: 5,
-    engine: "Electric Motor",
-    isFeatured: true,
-    images: ["https://images.unsplash.com/photo-1618843479313-40f8afb4b4d8?w=800", "https://images.unsplash.com/photo-1544636331-e26879cd4d9b?w=800", "https://images.unsplash.com/photo-1556189250-72ba954cfc2b?w=800"]
+    engineSize: "Dual Motor",
+    color: "Pearl White",
+    description: "Lightning fast Model 3 Performance. Full Self-Driving capability included. Track mode enabled.",
+    features: ["Autopilot", "Panoramic Roof", "Premium Audio", "20'' Überturbine Wheels"],
+    images: ["https://images.unsplash.com/photo-1560958089-b8a1929cea89?auto=format&fit=crop&w=800&q=80"],
+    isFeatured: true
+  },
+  {
+    make: "Mercedes-Benz",
+    model: "C63 AMG",
+    year: 2020,
+    price: 58000,
+    mileage: 22000,
+    fuelType: "Petrol",
+    transmission: "Automatic",
+    engineSize: "4.0L V8",
+    color: "Obsidian Black",
+    description: "The last of the V8s. Immaculate condition, full Mercedes service history, night package.",
+    features: ["Performance Exhaust", "Burmester Surround", "Active Park Assist", "Nappa Leather"],
+    images: ["https://images.unsplash.com/photo-1618843479313-40f8afb4b4d8?auto=format&fit=crop&w=800&q=80"],
+    isFeatured: true
+  },
+  {
+    make: "Audi",
+    model: "RS5 Sportback",
+    year: 2021,
+    price: 62000,
+    mileage: 15000,
+    fuelType: "Petrol",
+    transmission: "Automatic",
+    engineSize: "2.9L V6",
+    color: "Nardo Gray",
+    description: "Aggressive styling meets daily usability. RS Sport exhaust, ceramic brakes, and carbon fiber interior.",
+    features: ["Virtual Cockpit", "Massage Seats", "Bang & Olufsen", "360 Camera"],
+    images: ["https://images.unsplash.com/photo-1606152421802-db97b9c7a11b?auto=format&fit=crop&w=800&q=80"],
+    isFeatured: false
+  },
+  {
+    make: "Ford",
+    model: "Mustang GT",
+    year: 2023,
+    price: 48000,
+    mileage: 1500,
+    fuelType: "Petrol",
+    transmission: "Manual",
+    engineSize: "5.0L V8",
+    color: "Race Red",
+    description: "Brand new Mustang GT with the 6-speed manual. Active exhaust and performance pack 1.",
+    features: ["Brembo Brakes", "Line Lock", "Magneride Suspension", "Sync 4"],
+    images: ["https://images.unsplash.com/photo-1584345604476-8ec5e12e42dd?auto=format&fit=crop&w=800&q=80"],
+    isFeatured: false
+  },
+  {
+    make: "Porsche",
+    model: "911 Carrera S",
+    year: 2019,
+    price: 115000,
+    mileage: 18000,
+    fuelType: "Petrol",
+    transmission: "PDK",
+    engineSize: "3.0L",
+    color: "GT Silver",
+    description: "Timeless 911 in GT Silver. Sport Chrono package, PASM, and Bose sound system.",
+    features: ["Sport Chrono", "Glass Sunroof", "Adaptive Sport Seats", "LED Matrix Headlights"],
+    images: ["https://images.unsplash.com/photo-1503376780353-7e6692767b70?auto=format&fit=crop&w=800&q=80"],
+    isFeatured: false
+  },
+  {
+    make: "Land Rover",
+    model: "Range Rover Sport",
+    year: 2022,
+    price: 85000,
+    mileage: 5000,
+    fuelType: "Hybrid",
+    transmission: "Automatic",
+    engineSize: "3.0L",
+    color: "Carpathian Grey",
+    description: "Luxury meets capability. P400e Plug-in Hybrid with extended electric range.",
+    features: ["Air Suspension", "Pixel LED Lights", "Meridian Sound", "Meridian Signature"],
+    images: ["https://images.unsplash.com/photo-1606664515524-ed2f786a0bd6?auto=format&fit=crop&w=800&q=80"],
+    isFeatured: false
+  },
+  {
+    make: "Toyota",
+    model: "Supra MK5",
+    year: 2021,
+    price: 52000,
+    mileage: 9000,
+    fuelType: "Petrol",
+    transmission: "Automatic",
+    engineSize: "3.0L",
+    color: "Renaissance Red",
+    description: "The legend returns. A91 Edition with carbon fiber aero and unique wheels.",
+    features: ["JBL Audio", "Active Differential", "Brembo Brakes", "Carbon Mirror Caps"],
+    images: ["https://images.unsplash.com/photo-1605559424843-9e4c228bf1c2?auto=format&fit=crop&w=800&q=80"],
+    isFeatured: false
   },
   {
     make: "Honda",
-    model: "Civic",
-    year: 2020,
-    price: 14500,
-    mileage: 38000,
+    model: "Civic Type R",
+    year: 2023,
+    price: 46000,
+    mileage: 500,
     fuelType: "Petrol",
-    transmission: "Automatic",
-    color: "Grey",
-    seats: 5,
-    engine: "1.5L Turbo",
-    isFeatured: false,
-    images: ["https://images.unsplash.com/photo-1606664515524-ed2f786a0bd6?w=800", "https://images.unsplash.com/photo-1502877338535-766e1452684a?w=800", "https://images.unsplash.com/photo-1503376780353-7e6692767b70?w=800"]
-  },
-  {
-    make: "Volkswagen",
-    model: "Golf",
-    year: 2019,
-    price: 13900,
-    mileage: 42000,
-    fuelType: "Diesel",
     transmission: "Manual",
-    color: "Blue",
-    seats: 5,
-    engine: "2.0L TDI",
-    isFeatured: false,
-    images: ["https://images.unsplash.com/photo-1502877338535-766e1452684a?w=800", "https://images.unsplash.com/photo-1553440569-bcc63803a83d?w=800", "https://images.unsplash.com/photo-1618843479313-40f8afb4b4d8?w=800"]
-  },
-  {
-    make: "Hyundai",
-    model: "Tucson",
-    year: 2022,
-    price: 19800,
-    mileage: 12000,
-    fuelType: "Hybrid",
-    transmission: "Automatic",
-    color: "Black",
-    seats: 5,
-    engine: "1.6L Hybrid",
-    isFeatured: false,
-    images: ["https://images.unsplash.com/photo-1503376780353-7e6692767b70?w=800", "https://images.unsplash.com/photo-1555215695-3004980ad54e?w=800", "https://images.unsplash.com/photo-1544636331-e26879cd4d9b?w=800"]
+    engineSize: "2.0L Turbo",
+    color: "Championship White",
+    description: "The ultimate hot hatch. FL5 generation in classic Championship White.",
+    features: ["Rev-Match System", "LogR Data Logger", "Limited Slip Diff", "Bucket Seats"],
+    images: ["https://images.unsplash.com/photo-1594070319944-7c0c638f3f4d?auto=format&fit=crop&w=800&q=80"],
+    isFeatured: false
   }
 ];
 
@@ -137,17 +146,14 @@ export async function GET() {
   try {
     await connectDB();
     
-    const count = await Car.countDocuments();
-    if (count === 0) {
-      await Car.insertMany(dummyCars);
-      return NextResponse.json(
-        { success: true, message: "9 cars seeded successfully" },
-        { headers: { "Content-Type": "application/json" } }
-      );
-    }
+    // Wipe existing data to fix broken images and force refresh
+    await Car.deleteMany({});
+    
+    // Insert new high-quality inventory
+    await Car.insertMany(dummyCars);
     
     return NextResponse.json(
-      { success: true, message: "Database already seeded" },
+      { success: true, message: "Database force-refreshed with high-quality images" },
       { headers: { "Content-Type": "application/json" } }
     );
   } catch (error) {

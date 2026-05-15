@@ -2,6 +2,7 @@
 
 import { useState, useEffect } from "react";
 import Link from "next/link";
+import Image from "next/image";
 import { usePathname } from "next/navigation";
 
 export default function Navbar() {
@@ -72,9 +73,14 @@ export default function Navbar() {
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="flex justify-between items-center">
           <div className="flex-shrink-0">
-            <Link href="/" className="font-heading text-gold text-2xl font-bold tracking-tighter group flex items-center">
-              <span className="bg-gold text-background px-2 py-0.5 rounded mr-1 transition-transform group-hover:-rotate-6">A</span>
-              utoNova
+            <Link href="/" className="flex items-center gap-3 group">
+              <Image 
+                src="/logo.png" 
+                alt="AutoNova Motors" 
+                width={180} 
+                height={45} 
+                className="h-10 w-auto object-contain transition-transform duration-300 group-hover:scale-105"
+              />
             </Link>
           </div>
           

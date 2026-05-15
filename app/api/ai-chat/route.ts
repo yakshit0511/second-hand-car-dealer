@@ -1,51 +1,41 @@
 import { NextResponse } from "next/server";
+import { GoogleGenerativeAI } from "@google/generative-ai";
 
 export async function POST(request: Request) {
   try {
     const { messages } = await request.json();
-    const apiKey = process.env.ANTHROPIC_API_KEY;
+    const apiKey = process.env.GEMINI_API_KEY;
 
-    if (!apiKey) {
+    if (!apiKey || apiKey === "your_gemini_api_key_here") {
       return NextResponse.json(
-        { error: "Anthropic API Key not configured" },
+        { error: "Valid Gemini API Key not found in .env.local" },
         { status: 500, headers: { "Content-Type": "application/json" } }
       );
     }
 
-    const systemPrompt = "You are AutoNova Motors' friendly car assistant. You help customers find the right used car. You know we sell BMW, Mercedes, Audi, Toyota, Ford, Tesla, Honda, Volkswagen, Hyundai. Price range $13,000–$31,000. All cars are inspected. We offer financing, test drives, and home delivery. Keep answers short, friendly, and helpful. If asked about a specific car, suggest visiting /cars page.";
-
-    const response = await fetch("https://api.anthropic.com/v1/messages", {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-        "x-api-key": apiKey,
-        "anthropic-version": "2023-06-01"
-      },
-      body: JSON.stringify({
-        model: "claude-3-sonnet-20240229",
-        max_tokens: 1024,
-        system: systemPrompt,
-        messages: messages
-      })
+    const genAI = new GoogleGenerativeAI(apiKey);
+    const model = genAI.getGenerativeModel({ 
+      model: "gemini-1.5-flash",
     });
 
-    if (!response.ok) {
-      const error = await response.json();
-      console.error("Anthropic API Error:", error);
-      throw new Error("Failed to fetch AI response");
-    }
+    const systemPrompt = "You are AutoNova Motors' elite car concierge in New York. You help customers find luxury pre-owned vehicles. Our inventory includes BMW M4, Tesla Model 3 Performance, Mercedes C63 AMG, Audi RS5, and Porsche 911. Price range: $45k - $115k. We offer financing, 150-point inspections, and home delivery. Keep answers short, premium, and professional. Always suggest visiting the /cars page for the full list.";
 
-    const data = await response.json();
-    const aiMessage = data.content[0].text;
+    // Simple direct prompt for maximum reliability
+    const userMessage = messages[messages.length - 1].content;
+    const fullPrompt = `${systemPrompt}\n\nUser Question: ${userMessage}`;
+
+    const result = await model.generateContent(fullPrompt);
+    const response = await result.response;
+    const text = response.text();
 
     return NextResponse.json(
-      { message: aiMessage },
+      { message: text },
       { headers: { "Content-Type": "application/json" } }
     );
   } catch (error) {
-    console.error("AI Chat Error:", error);
+    console.error("Gemini AI Chat Error:", error);
     return NextResponse.json(
-      { error: "Internal Server Error" },
+      { error: "I'm having trouble connecting to the AI brain. Please try again in a moment." },
       { status: 500, headers: { "Content-Type": "application/json" } }
     );
   }
