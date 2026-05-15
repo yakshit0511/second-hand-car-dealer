@@ -6,13 +6,19 @@ import Link from "next/link";
 
 import { ICar } from "@/types/car";
 
-export default function CarsGrid({ initialCars }: { initialCars: ICar[] }) {
+export default function CarsGrid({ 
+  initialCars, 
+  initialSearch = "" 
+}: { 
+  initialCars: ICar[], 
+  initialSearch?: string 
+}) {
   const [make, setMake] = useState("All");
   const [fuelType, setFuelType] = useState("All");
   const [transmission, setTransmission] = useState("All");
   const [minPrice, setMinPrice] = useState("");
   const [maxPrice, setMaxPrice] = useState("");
-  const [search, setSearch] = useState("");
+  const [search, setSearch] = useState(initialSearch);
 
   const filteredCars = initialCars.filter((car) => {
     let match = true;
@@ -143,7 +149,7 @@ export default function CarsGrid({ initialCars }: { initialCars: ICar[] }) {
             >
               <div className="relative h-[220px] w-full">
                 <Image 
-                  src={car.images[0]} 
+                  src={car.images[0] || "https://images.unsplash.com/photo-1555215695-3004980ad54e?w=600"} 
                   alt={`${car.make} ${car.model}`} 
                   fill 
                   className="object-cover"

@@ -1,6 +1,22 @@
+"use client";
+
 import Link from "next/link";
+import { useRouter } from "next/navigation";
+import { useState } from "react";
 
 export default function Hero() {
+  const [searchQuery, setSearchQuery] = useState("");
+  const router = useRouter();
+
+  const handleSearch = (e: React.FormEvent) => {
+    e.preventDefault();
+    if (searchQuery.trim()) {
+      router.push(`/cars?search=${encodeURIComponent(searchQuery)}`);
+    } else {
+      router.push("/cars");
+    }
+  };
+
   return (
     <section 
       id="home"
@@ -24,23 +40,28 @@ export default function Hero() {
         </p>
         
         {/* Search Bar */}
-        <div className="flex w-full max-w-2xl bg-card rounded-full overflow-hidden border border-gold/20 mb-10 shadow-lg focus-within:border-gold transition-colors">
+        <form 
+          onSubmit={handleSearch}
+          className="flex w-full max-w-2xl bg-card rounded-full overflow-hidden border border-gold/20 mb-10 shadow-lg focus-within:border-gold transition-colors"
+        >
           <input 
             type="text" 
             placeholder="Search by make, model or keyword..." 
+            value={searchQuery}
+            onChange={(e) => setSearchQuery(e.target.value)}
             className="flex-grow bg-transparent text-primary px-6 py-4 focus:outline-none placeholder:text-muted"
           />
-          <button className="bg-gold hover:bg-gold-hover text-background font-bold px-8 py-4 transition-colors">
+          <button type="submit" className="bg-gold hover:bg-gold-hover text-background font-bold px-8 py-4 transition-colors">
             Search
           </button>
-        </div>
+        </form>
 
         {/* CTA Buttons */}
         <div className="flex flex-col sm:flex-row gap-4 mb-16">
-          <Link href="#cars" className="bg-gold hover:bg-gold-hover text-background font-bold py-3 px-8 rounded transition-colors text-center">
+          <Link href="/cars" className="bg-gold hover:bg-gold-hover text-background font-bold py-3 px-8 rounded transition-colors text-center">
             Browse All Cars
           </Link>
-          <Link href="#how-it-works" className="bg-transparent border border-gold text-gold hover:bg-gold/10 font-bold py-3 px-8 rounded transition-colors text-center">
+          <Link href="#about" className="bg-transparent border border-gold text-gold hover:bg-gold/10 font-bold py-3 px-8 rounded transition-colors text-center">
             How It Works
           </Link>
         </div>

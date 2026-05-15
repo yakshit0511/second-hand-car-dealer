@@ -6,9 +6,14 @@ import connectDB from "@/lib/mongodb";
 import Car from "@/models/Car";
 import { ICar } from "@/types/car";
 
+export const dynamic = "force-dynamic";
+export const revalidate = 0;
+
 async function getCars(): Promise<ICar[]> {
   try {
     await connectDB();
+    // We fetch all cars here and handle filtering on the client for a smoother experience
+    // as per the existing CarsGrid implementation.
     const cars = await Car.find({}).sort({ createdAt: -1 }).lean();
     return JSON.parse(JSON.stringify(cars));
   } catch (error) {
@@ -17,8 +22,15 @@ async function getCars(): Promise<ICar[]> {
   }
 }
 
-export default async function CarsPage() {
+interface PageProps {
+  searchParams: { [key: string]: string | string[] | undefined };
+}
+
+export default async function CarsPage({ searchParams }: PageProps) {
   const cars = await getCars();
+  
+  // Extract search from query params to pass to client component
+  const initialSearch = typeof searchParams.search === 'string' ? searchParams.search : "";
 
   return (
     <main className="min-h-screen bg-background text-primary">
@@ -47,7 +59,7 @@ export default async function CarsPage() {
               <div className="w-16 h-16 border-4 border-[#2A2A2A] border-t-gold rounded-full animate-spin"></div>
             </div>
           }>
-            <CarsGrid initialCars={cars} />
+            <CarsGrid initialCars={cars} initialSearch={initialSearch} />
           </Suspense>
         </div>
       </section>

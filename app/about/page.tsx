@@ -2,6 +2,12 @@ import Image from "next/image";
 import Link from "next/link";
 import Navbar from "@/components/Navbar";
 import Footer from "@/components/Footer";
+import type { Metadata } from "next";
+
+export const metadata: Metadata = {
+  title: "About Us | The AutoNova Story",
+  description: "Learn how AutoNova Motors became New York's most trusted pre-owned car dealership. Our mission, our team, and our heritage.",
+};
 
 export default function AboutPage() {
   return (

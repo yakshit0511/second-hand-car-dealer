@@ -1,6 +1,9 @@
 import { NextResponse } from "next/server";
 import connectDB from "@/lib/mongodb";
 import Car from "@/models/Car";
+import Contact from "@/models/Contact";
+
+export const dynamic = "force-dynamic";
 
 const dummyCars = [
   {

@@ -9,6 +9,17 @@ import { ICar } from "@/types/car";
 import connectDB from "@/lib/mongodb";
 import Car from "@/models/Car";
 import mongoose from "mongoose";
+import type { Metadata } from "next";
+
+export const dynamic = "force-dynamic";
+export const revalidate = 0;
+
+export async function generateMetadata({ params }: { params: { id: string } }): Promise<Metadata> {
+  const car = await getCar(params.id);
+  return {
+    title: car ? `${car.year} ${car.make} ${car.model} | AutoNova Motors` : "Car Not Found",
+  };
+}
 
 async function getCar(id: string): Promise<ICar | null> {
   try {

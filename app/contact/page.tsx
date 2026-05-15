@@ -3,6 +3,12 @@ import Footer from "@/components/Footer";
 import PageContactForm from "@/components/PageContactForm";
 import FAQAccordion from "@/components/FAQAccordion";
 import Link from "next/link";
+import type { Metadata } from "next";
+
+export const metadata: Metadata = {
+  title: "Contact Us | AutoNova Motors",
+  description: "Get in touch with AutoNova Motors for premium pre-owned vehicles, test drives, and financing enquiries.",
+};
 
 export default function ContactPage() {
   return (
