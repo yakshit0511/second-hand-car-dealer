@@ -140,12 +140,21 @@ export async function GET() {
     const count = await Car.countDocuments();
     if (count === 0) {
       await Car.insertMany(dummyCars);
-      return NextResponse.json({ success: true, message: "9 cars seeded successfully" });
+      return NextResponse.json(
+        { success: true, message: "9 cars seeded successfully" },
+        { headers: { "Content-Type": "application/json" } }
+      );
     }
     
-    return NextResponse.json({ success: true, message: "Database already seeded" });
+    return NextResponse.json(
+      { success: true, message: "Database already seeded" },
+      { headers: { "Content-Type": "application/json" } }
+    );
   } catch (error) {
     console.error("Seeding error:", error);
-    return NextResponse.json({ success: false, error: "Failed to seed database" }, { status: 500 });
+    return NextResponse.json(
+      { success: false, error: "Failed to seed database" }, 
+      { status: 500, headers: { "Content-Type": "application/json" } }
+    );
   }
 }

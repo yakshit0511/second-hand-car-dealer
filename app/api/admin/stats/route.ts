@@ -17,9 +17,15 @@ export async function GET() {
       Car.countDocuments({ createdAt: { $gte: startOfMonth } }),
     ]);
 
-    return NextResponse.json({ totalCars, totalEnquiries, featuredCars, newThisMonth });
+    return NextResponse.json(
+      { totalCars, totalEnquiries, featuredCars, newThisMonth },
+      { headers: { "Content-Type": "application/json" } }
+    );
   } catch (error) {
     console.error("Error fetching admin stats:", error);
-    return NextResponse.json({ error: "Internal Server Error" }, { status: 500 });
+    return NextResponse.json(
+      { error: "Internal Server Error" },
+      { status: 500, headers: { "Content-Type": "application/json" } }
+    );
   }
 }

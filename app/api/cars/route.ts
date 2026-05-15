@@ -42,11 +42,13 @@ export async function GET(request: Request) {
       ];
     }
 
-    const cars = await Car.find(query).sort({ createdAt: -1 }).lean();
-    return NextResponse.json(cars);
+    return NextResponse.json(cars, { headers: { "Content-Type": "application/json" } });
   } catch (error) {
     console.error("Error fetching cars:", error);
-    return NextResponse.json({ error: "Internal Server Error" }, { status: 500 });
+    return NextResponse.json(
+      { error: "Internal Server Error" },
+      { status: 500, headers: { "Content-Type": "application/json" } }
+    );
   }
 }
 
@@ -54,11 +56,15 @@ export async function POST(request: Request) {
   try {
     await connectDB();
     const body = await request.json();
-    const newCar = new Car(body);
-    await newCar.save();
-    return NextResponse.json(newCar, { status: 201 });
+    return NextResponse.json(newCar, { 
+      status: 201, 
+      headers: { "Content-Type": "application/json" } 
+    });
   } catch (error) {
     console.error("Error creating car:", error);
-    return NextResponse.json({ error: "Failed to create car" }, { status: 500 });
+    return NextResponse.json(
+      { error: "Failed to create car" },
+      { status: 500, headers: { "Content-Type": "application/json" } }
+    );
   }
 }

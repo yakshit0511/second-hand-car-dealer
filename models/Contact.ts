@@ -1,21 +1,17 @@
-import mongoose, { Schema, Document } from "mongoose";
+import mongoose from "mongoose";
 
-export interface IContact extends Document {
-  name: string;
-  email: string;
-  phone?: string;
-  subject?: string;
-  message: string;
-  createdAt: Date;
-}
+const ContactSchema = new mongoose.Schema(
+  {
+    name: { type: String, required: true },
+    email: { type: String, required: true },
+    phone: { type: String },
+    message: { type: String, required: true },
+    carId: { type: mongoose.Schema.Types.ObjectId, ref: "Car" },
+    status: { type: String, default: "New" }, // New, Contacted, Sold
+  },
+  { timestamps: true }
+);
 
-const ContactSchema: Schema = new Schema({
-  name: { type: String, required: true },
-  email: { type: String, required: true },
-  phone: { type: String },
-  subject: { type: String },
-  message: { type: String, required: true },
-  createdAt: { type: Date, default: Date.now },
-});
-
-export default mongoose.models.Contact || mongoose.model<IContact>("Contact", ContactSchema);
+// MongoDB model registration fix — prevents "Cannot overwrite model" error on Vercel
+const Contact = mongoose.models.Contact || mongoose.model("Contact", ContactSchema);
+export default Contact;
