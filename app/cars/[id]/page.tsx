@@ -20,12 +20,14 @@ export async function generateMetadata({ params }: { params: { id: string } }): 
   if (!car) return { title: "Car Not Found" };
   
   return {
+    metadataBase: new URL(process.env.NEXT_PUBLIC_SITE_URL || "https://autonova-motors.vercel.app"),
     title: `${car.year} ${car.make} ${car.model} | AutoNova Motors`,
     description: `Check out this ${car.year} ${car.make} ${car.model} available at AutoNova Motors. ${car.mileage.toLocaleString()} miles, ${car.fuelType}, ${car.transmission}.`,
     openGraph: {
       title: `${car.year} ${car.make} ${car.model}`,
       description: `View full details of this ${car.make} ${car.model} at AutoNova Motors.`,
       images: [car.images[0]],
+      url: `${process.env.NEXT_PUBLIC_SITE_URL || "https://autonova-motors.vercel.app"}/cars/${car._id}`,
     }
   };
 }
@@ -68,7 +70,8 @@ export default async function CarDetailPage({ params }: { params: { id: string }
   }
 
   const similarCars = await getSimilarCars(car._id, car.make);
-  const currentUrl = `https://second-hand-car-dealer-b1f0p71gv-23it047-charusatedus-projects.vercel.app/cars/${car._id}`;
+  const siteUrl = process.env.NEXT_PUBLIC_SITE_URL || "https://autonova-motors.vercel.app";
+  const currentUrl = `${siteUrl}/cars/${car._id}`;
 
   // JSON-LD Structured Data
   const jsonLd = {
@@ -129,7 +132,7 @@ export default async function CarDetailPage({ params }: { params: { id: string }
                 )}
               </div>
               <div className="flex items-center gap-4 mb-4">
-                <h1 className="font-heading text-4xl md:text-5xl lg:text-7xl text-primary leading-tight tracking-tighter">
+                <h1 className="font-heading text-2xl sm:text-3xl md:text-5xl lg:text-7xl text-primary leading-tight tracking-tighter">
                   {car.year} {car.make} {car.model}
                 </h1>
                 <div className="mt-2">
@@ -158,7 +161,7 @@ export default async function CarDetailPage({ params }: { params: { id: string }
               </div>
             </div>
             <div className="text-left md:text-right">
-              <div className="text-gold text-5xl md:text-6xl font-black font-heading mb-2 drop-shadow-[0_0_15px_rgba(201,168,76,0.2)]">
+              <div className="text-gold text-4xl sm:text-5xl md:text-6xl font-black font-heading mb-2 drop-shadow-[0_0_15px_rgba(201,168,76,0.2)]">
                 ${car.price.toLocaleString()}
               </div>
               <p className="text-muted text-sm font-medium">Verified Price • Home Delivery Available</p>

@@ -44,41 +44,43 @@ export default function CompareModal({ cars, onClose }: CompareModalProps) {
         </div>
 
         {/* Content */}
-        <div className="overflow-auto p-6">
-          <table className="w-full text-left">
-            <thead>
-              <tr className="border-b border-[#2A2A2A]">
-                <th className="py-4 px-4 text-muted font-medium w-1/4">Specification</th>
-                {cars.map((car) => (
-                  <th key={car._id} className="py-4 px-4 w-3/8">
-                    <div className="flex flex-col items-center">
-                      <div className="relative w-32 h-20 rounded-lg overflow-hidden mb-3 border border-[#2A2A2A]">
-                        <Image src={car.images[0]} alt={car.model} fill className="object-cover" />
+        <div className="overflow-auto p-4 md:p-6">
+          <div className="overflow-x-auto">
+            <table className="w-full text-left" style={{ minWidth: "500px" }}>
+              <thead>
+                <tr className="border-b border-[#2A2A2A]">
+                  <th className="py-4 px-3 md:px-4 text-muted font-medium text-xs md:text-sm w-1/4">Specification</th>
+                  {cars.map((car) => (
+                    <th key={car._id} className="py-4 px-3 md:px-4">
+                      <div className="flex flex-col items-center">
+                        <div className="relative w-24 md:w-32 h-16 md:h-20 rounded-lg overflow-hidden mb-3 border border-[#2A2A2A]">
+                          <Image src={car.images[0]} alt={car.model} fill className="object-cover" />
+                        </div>
+                        <span className="text-primary font-bold text-center leading-tight text-xs md:text-sm">
+                          {car.year} {car.make}<br/>{car.model}
+                        </span>
                       </div>
-                      <span className="text-primary font-bold text-center leading-tight">
-                        {car.year} {car.make}<br/>{car.model}
-                      </span>
-                    </div>
-                  </th>
-                ))}
-              </tr>
-            </thead>
-            <tbody>
-              {specs.map((spec) => (
-                <tr key={spec.label} className="border-b border-[#2A2A2A] hover:bg-white/5 transition-colors">
-                  <td className="py-4 px-4 text-muted font-medium">{spec.label}</td>
-                  {cars.map((car: ICar) => (
-                    <td key={car._id} className="py-4 px-4 text-center text-primary font-medium">
-                      {spec.format 
-                        // eslint-disable-next-line @typescript-eslint/no-explicit-any
-                        ? spec.format(car[spec.key as keyof ICar] as any) 
-                        : (car[spec.key as keyof ICar] || "—")}
-                    </td>
+                    </th>
                   ))}
                 </tr>
-              ))}
-            </tbody>
-          </table>
+              </thead>
+              <tbody>
+                {specs.map((spec) => (
+                  <tr key={spec.label} className="border-b border-[#2A2A2A] hover:bg-white/5 transition-colors">
+                    <td className="py-3 px-3 md:px-4 text-muted font-medium text-xs md:text-sm">{spec.label}</td>
+                    {cars.map((car: ICar) => (
+                      <td key={car._id} className="py-3 px-3 md:px-4 text-center text-primary font-medium text-xs md:text-sm">
+                        {spec.format 
+                          // eslint-disable-next-line @typescript-eslint/no-explicit-any
+                          ? spec.format(car[spec.key as keyof ICar] as any) 
+                          : (car[spec.key as keyof ICar] || "—")}
+                      </td>
+                    ))}
+                  </tr>
+                ))}
+              </tbody>
+            </table>
+          </div>
         </div>
 
         {/* Footer */}

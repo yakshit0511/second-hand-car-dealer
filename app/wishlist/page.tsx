@@ -52,7 +52,7 @@ export default function WishlistPage() {
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-24 pt-32">
         <div className="mb-12 flex flex-col md:flex-row justify-between items-end gap-6">
           <div>
-            <h1 className="font-heading text-5xl md:text-6xl text-primary mb-4 tracking-tighter">
+            <h1 className="font-heading text-4xl md:text-5xl lg:text-6xl text-primary mb-4 tracking-tighter">
               Your <span className="text-gold">Wishlist</span> ❤️
             </h1>
             <p className="text-muted text-lg max-w-2xl">

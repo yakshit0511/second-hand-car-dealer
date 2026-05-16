@@ -66,10 +66,10 @@ export default function AIChatWidget() {
   ];
 
   return (
-    <div className="fixed bottom-8 right-8 z-[10000]">
+    <div className="fixed bottom-4 right-4 md:bottom-8 md:right-8 z-[10000]">
       {/* Chat Window */}
       {isOpen && (
-        <div className="absolute bottom-20 right-0 w-[350px] h-[500px] bg-card border border-gold/30 rounded-2xl shadow-[0_20px_50px_rgba(0,0,0,0.5)] flex flex-col overflow-hidden animate-fade-in-up">
+        <div className="absolute bottom-16 md:bottom-20 right-0 w-[calc(100vw-32px)] md:w-[350px] h-[70vh] md:h-[500px] bg-card border border-gold/30 rounded-2xl shadow-[0_20px_50px_rgba(0,0,0,0.5)] flex flex-col overflow-hidden animate-fade-in-up">
           {/* Header */}
           <div className="p-4 bg-[#1A1A1A] border-b border-[#2A2A2A] flex justify-between items-center">
             <h3 className="font-heading text-gold font-bold flex items-center gap-2">

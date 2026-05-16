@@ -56,7 +56,7 @@ export default function Hero() {
           🏆 New York&apos;s #1 Dealer
         </span>
         
-        <h1 className="font-heading text-5xl md:text-7xl lg:text-[84px] text-white mb-8 leading-[1.1] tracking-tight">
+        <h1 className="font-heading text-4xl sm:text-5xl md:text-7xl lg:text-[84px] text-white mb-6 md:mb-8 leading-[1.2] md:leading-[1.1] tracking-tight">
           {words.map((word, idx) => (
             <span 
               key={idx} 
@@ -69,34 +69,34 @@ export default function Hero() {
         </h1>
         
         <p 
-          className="font-body text-lg md:text-xl text-white/80 mb-12 max-w-2xl opacity-0 animate-fade-in-up"
+          className="font-body text-base md:text-xl text-white/80 mb-8 md:mb-12 max-w-2xl opacity-0 animate-fade-in-up px-4"
           style={{ animationDelay: '1200ms', animationFillMode: 'forwards' }}
         >
           Redefining the pre-owned car experience with luxury standards, 150-point inspections, and white-glove home delivery.
         </p>
         
         {/* Search Bar Upgraded */}
-        <div className="w-full max-w-2xl opacity-0 animate-fade-in-up" style={{ animationDelay: '1400ms', animationFillMode: 'forwards' }}>
+        <div className="w-full max-w-2xl opacity-0 animate-fade-in-up px-2" style={{ animationDelay: '1400ms', animationFillMode: 'forwards' }}>
           <form 
             onSubmit={handleSearch}
-            className="flex w-full bg-white/10 backdrop-blur-xl rounded-2xl overflow-hidden border border-white/20 mb-6 shadow-2xl focus-within:border-gold/50 focus-within:bg-white/15 transition-all p-1.5"
+            className="flex flex-col sm:flex-row w-full bg-white/10 backdrop-blur-xl rounded-2xl overflow-hidden border border-white/20 mb-6 shadow-2xl focus-within:border-gold/50 focus-within:bg-white/15 transition-all p-1.5 gap-1.5 sm:gap-0"
           >
             <input 
               type="text" 
-              placeholder="Search by make, model or keyword..." 
+              placeholder="Search by make, model..." 
               value={searchQuery}
               onChange={(e) => setSearchQuery(e.target.value)}
-              className="flex-grow bg-transparent text-white px-6 py-4 focus:outline-none placeholder:text-white/50 text-lg"
+              className="flex-grow bg-transparent text-white px-4 sm:px-6 py-3 sm:py-4 focus:outline-none placeholder:text-white/50 text-base sm:text-lg"
             />
-            <button type="submit" className="bg-gold hover:bg-gold-hover text-background font-bold px-10 py-4 rounded-xl transition-all duration-300 transform active:scale-95 flex items-center">
+            <button type="submit" className="bg-gold hover:bg-gold-hover text-background font-bold px-6 sm:px-10 py-3 sm:py-4 rounded-xl transition-all duration-300 transform active:scale-95 flex items-center justify-center">
               <span>Search</span>
               <svg className="w-5 h-5 ml-2" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2.5" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"></path></svg>
             </button>
           </form>
 
           {/* Popular Tags */}
-          <div className="flex flex-wrap items-center justify-center gap-3">
-            <span className="text-white/50 text-sm font-medium mr-1">Popular:</span>
+          <div className="flex flex-wrap items-center justify-center gap-2 sm:gap-3">
+            <span className="text-white/50 text-xs sm:text-sm font-medium mr-1">Popular:</span>
             {tags.map((tag) => (
               <button
                 key={tag}
@@ -105,7 +105,7 @@ export default function Hero() {
                   const param = tag === "Under $20k" ? "maxPrice" : "search";
                   router.push(`/cars?${param}=${encodeURIComponent(query)}`);
                 }}
-                className="bg-white/5 hover:bg-white/10 border border-white/10 hover:border-gold/30 text-white/80 hover:text-gold px-4 py-1 rounded-full text-xs transition-all backdrop-blur-sm"
+                className="bg-white/5 hover:bg-white/10 border border-white/10 hover:border-gold/30 text-white/80 hover:text-gold px-3 sm:px-4 py-1 rounded-full text-[10px] sm:text-xs transition-all backdrop-blur-sm"
               >
                 {tag}
               </button>

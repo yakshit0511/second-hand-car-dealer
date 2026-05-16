@@ -141,10 +141,10 @@ export default function CarsGrid({
   return (
     <div className="relative pb-24">
       {/* Filter Bar Upgraded */}
-      <div className="bg-[#1A1A1A]/80 backdrop-blur-xl rounded-2xl border border-gold/20 p-6 mb-8 sticky top-[100px] z-[40] shadow-2xl overflow-x-auto scrollbar-thin scrollbar-thumb-gold/20">
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-6 gap-6 items-end min-w-[1000px] xl:min-w-0">
+      <div className="bg-[#1A1A1A]/80 backdrop-blur-xl rounded-2xl border border-gold/20 p-4 md:p-6 mb-8 sticky top-[80px] md:top-[100px] z-[40] shadow-2xl">
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-6 gap-4 md:gap-6 items-end">
           <div className="flex flex-col relative">
-            <label className="text-muted text-xs font-bold uppercase tracking-widest mb-2">Search</label>
+            <label className="text-muted text-[10px] font-bold uppercase tracking-widest mb-2">Search</label>
             <input 
               type="text" 
               placeholder="Make or model..." 
@@ -153,7 +153,7 @@ export default function CarsGrid({
               onFocus={() => setShowHistory(true)}
               onBlur={() => setTimeout(() => setShowHistory(false), 200)}
               onKeyDown={(e) => e.key === "Enter" && saveToHistory(search)}
-              className="bg-background border border-[#2A2A2A] rounded-xl p-3 text-primary focus:border-gold outline-none transition-all"
+              className="bg-background border border-[#2A2A2A] rounded-xl p-3 text-sm text-primary focus:border-gold outline-none transition-all"
             />
             {showHistory && history.length > 0 && (
               <div className="absolute top-[calc(100%+8px)] left-0 w-full bg-[#1A1A1A] border border-gold/20 rounded-xl p-3 shadow-2xl z-50 animate-fade-in">
@@ -163,7 +163,7 @@ export default function CarsGrid({
                     <div key={term} className="flex items-center bg-background border border-[#2A2A2A] rounded-lg overflow-hidden">
                       <button 
                         onClick={() => { setSearch(term); saveToHistory(term); }}
-                        className="px-3 py-1.5 text-xs text-primary hover:text-gold transition-colors"
+                        className="px-3 py-1.5 text-[10px] text-primary hover:text-gold transition-colors"
                       >
                         {term}
                       </button>
@@ -184,11 +184,11 @@ export default function CarsGrid({
             )}
           </div>
           <div className="flex flex-col">
-            <label className="text-muted text-xs font-bold uppercase tracking-widest mb-2">Make</label>
+            <label className="text-muted text-[10px] font-bold uppercase tracking-widest mb-2">Make</label>
             <select 
               value={make} 
               onChange={(e) => setMake(e.target.value)}
-              className="bg-background border border-[#2A2A2A] rounded-xl p-3 text-primary focus:border-gold outline-none appearance-none cursor-pointer"
+              className="bg-background border border-[#2A2A2A] rounded-xl p-3 text-sm text-primary focus:border-gold outline-none appearance-none cursor-pointer"
             >
               <option value="All">All Makes</option>
               {["BMW", "Mercedes", "Audi", "Toyota", "Ford", "Tesla", "Honda", "Volkswagen", "Hyundai"].map(m => (
@@ -197,11 +197,11 @@ export default function CarsGrid({
             </select>
           </div>
           <div className="flex flex-col">
-            <label className="text-muted text-xs font-bold uppercase tracking-widest mb-2">Fuel Type</label>
+            <label className="text-muted text-[10px] font-bold uppercase tracking-widest mb-2">Fuel Type</label>
             <select 
               value={fuelType} 
               onChange={(e) => setFuelType(e.target.value)}
-              className="bg-background border border-[#2A2A2A] rounded-xl p-3 text-primary focus:border-gold outline-none cursor-pointer"
+              className="bg-background border border-[#2A2A2A] rounded-xl p-3 text-sm text-primary focus:border-gold outline-none cursor-pointer"
             >
               <option value="All">All Fuels</option>
               {["Petrol", "Diesel", "Hybrid", "Electric"].map(f => (
@@ -210,11 +210,11 @@ export default function CarsGrid({
             </select>
           </div>
           <div className="flex flex-col">
-            <label className="text-muted text-xs font-bold uppercase tracking-widest mb-2">Sort By</label>
+            <label className="text-muted text-[10px] font-bold uppercase tracking-widest mb-2">Sort By</label>
             <select 
               value={sortBy} 
               onChange={(e) => setSortBy(e.target.value)}
-              className="bg-background border border-gold/30 rounded-xl p-3 text-gold font-bold focus:border-gold outline-none cursor-pointer"
+              className="bg-background border border-gold/30 rounded-xl p-3 text-sm text-gold font-bold focus:border-gold outline-none cursor-pointer"
             >
               {["Newest First", "Price: Low to High", "Price: High to Low", "Mileage: Low to High"].map(s => (
                 <option key={s} value={s}>{s}</option>
@@ -222,30 +222,30 @@ export default function CarsGrid({
             </select>
           </div>
           <div className="flex flex-col">
-            <label className="text-muted text-xs font-bold uppercase tracking-widest mb-2">Price Range</label>
+            <label className="text-muted text-[10px] font-bold uppercase tracking-widest mb-2">Price Range</label>
             <div className="flex space-x-2">
               <input 
                 type="number" 
                 placeholder="Min" 
                 value={minPrice}
                 onChange={(e) => setMinPrice(e.target.value)}
-                className="bg-background border border-[#2A2A2A] rounded-xl p-3 text-primary focus:border-gold outline-none w-full"
+                className="bg-background border border-[#2A2A2A] rounded-xl p-3 text-sm text-primary focus:border-gold outline-none w-full"
               />
               <input 
                 type="number" 
                 placeholder="Max" 
                 value={maxPrice}
                 onChange={(e) => setMaxPrice(e.target.value)}
-                className="bg-background border border-[#2A2A2A] rounded-xl p-3 text-primary focus:border-gold outline-none w-full"
+                className="bg-background border border-[#2A2A2A] rounded-xl p-3 text-sm text-primary focus:border-gold outline-none w-full"
               />
             </div>
           </div>
-          <div className="flex flex-col">
+          <div className="flex flex-col pt-2 sm:pt-0">
              <button 
                 onClick={clearFilters}
-                className="bg-transparent border border-gold/30 text-muted hover:text-gold hover:border-gold font-bold p-3 rounded-xl transition-all"
+                className="bg-transparent border border-gold/30 text-muted hover:text-gold hover:border-gold font-bold p-3 text-sm rounded-xl transition-all w-full"
               >
-                Clear Filters
+                Reset
               </button>
           </div>
         </div>

@@ -21,6 +21,7 @@ export default function SubmissionChecklist() {
 
   const [githubUrl, setGithubUrl] = useState("https://github.com/yakshit0511/second-hand-car-dealer");
   const [copied, setCopied] = useState(false);
+  const siteUrl = "https://second-hand-car-dealer-git-main-23it047-charusatedus-projects.vercel.app";
 
   const toggle = (key: keyof typeof checklist) => {
     setChecklist(prev => ({ ...prev, [key]: !prev[key] }));
@@ -28,7 +29,7 @@ export default function SubmissionChecklist() {
 
   const copyMessage = () => {
     const text = `Hi! Here is my AutoNova Motors project submission:
-Live Link: https://second-hand-car-dealer-yakshit0511s-projects.vercel.app
+Live Link: https://autonova-motors.vercel.app
 GitHub Repo: ${githubUrl}
 Tech Stack: Next.js 14, MongoDB Atlas, Tailwind CSS, Vercel`;
     
@@ -91,7 +92,7 @@ Tech Stack: Next.js 14, MongoDB Atlas, Tailwind CSS, Vercel`;
             <input 
               type="text" 
               readOnly
-              value="https://second-hand-car-dealer-yakshit0511s-projects.vercel.app"
+              value={siteUrl}
               className="w-full bg-[#0F0F0F] border border-[#2A2A2A] rounded-lg px-4 py-3 text-gold text-sm outline-none"
             />
           </div>

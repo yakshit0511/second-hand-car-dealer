@@ -22,11 +22,11 @@ export const metadata: Metadata = {
   description: "AutoNova Motors — New York's most trusted pre-owned car dealership. Browse 500+ premium used cars with transparent pricing, certified inspections, and home delivery.",
   keywords: ["used cars", "pre-owned cars", "second hand cars", "car dealer New York", "AutoNova Motors", "luxury cars NYC", "certified pre-owned"],
   authors: [{ name: "AutoNova Motors" }],
-  metadataBase: new URL("https://second-hand-car-dealer-b1f0p71gv-23it047-charusatedus-projects.vercel.app"),
+  metadataBase: new URL(process.env.NEXT_PUBLIC_SITE_URL || "https://autonova-motors.vercel.app"),
   openGraph: {
     title: "AutoNova Motors",
     description: "New York's most trusted pre-owned car dealership",
-    url: "https://second-hand-car-dealer-b1f0p71gv-23it047-charusatedus-projects.vercel.app",
+    url: process.env.NEXT_PUBLIC_SITE_URL || "https://autonova-motors.vercel.app",
     siteName: "AutoNova Motors",
     images: [
       {

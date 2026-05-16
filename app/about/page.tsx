@@ -35,7 +35,7 @@ export default function AboutPage() {
           <div className="inline-block bg-gold/20 border border-gold text-gold px-4 py-1.5 rounded-full text-sm font-bold tracking-wider mb-6">
             🏆 Established 2005 — 20 Years of Trust
           </div>
-          <h1 className="font-heading text-5xl md:text-6xl text-white mb-6">
+          <h1 className="font-heading text-4xl md:text-5xl lg:text-6xl text-white mb-6">
             About AutoNova Motors
           </h1>
           <p className="text-white/90 text-lg md:text-xl font-body max-w-2xl mx-auto">
@@ -176,7 +176,7 @@ export default function AboutPage() {
             </div>
 
             {/* Team Member 3 */}
-            <div className="bg-[#1A1A1A] border border-[#2A2A2A] rounded-xl p-8 text-center hover:border-gold hover:-translate-y-2 transition-all duration-300 shadow-lg group md:col-span-2 lg:col-span-1 md:w-1/2 lg:w-full md:mx-auto">
+            <div className="bg-[#1A1A1A] border border-[#2A2A2A] rounded-xl p-8 text-center hover:border-gold hover:-translate-y-2 transition-all duration-300 shadow-lg group">
               <div className="relative w-[120px] h-[120px] mx-auto mb-6 rounded-full overflow-hidden border-[3px] border-gold p-1">
                 <div className="relative w-full h-full rounded-full overflow-hidden">
                   <Image 
