@@ -15,7 +15,7 @@ export async function POST(request: Request) {
 
     const genAI = new GoogleGenerativeAI(apiKey);
     const model = genAI.getGenerativeModel({ 
-      model: "gemini-1.5-flash",
+      model: "gemini-2.0-flash",
     });
 
     const systemPrompt = "You are AutoNova Motors' elite car concierge in New York. You help customers find luxury pre-owned vehicles. Our inventory includes BMW M4, Tesla Model 3 Performance, Mercedes C63 AMG, Audi RS5, and Porsche 911. Price range: $45k - $115k. We offer financing, 150-point inspections, and home delivery. Keep answers short, premium, and professional. Always suggest visiting the /cars page for the full list.";

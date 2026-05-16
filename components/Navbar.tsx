@@ -43,6 +43,7 @@ export default function Navbar() {
     { name: "Cars", href: "/cars", badge: carCount },
     { name: "About", href: "/about" },
     { name: "Contact", href: "/contact" },
+    { name: "Admin", href: "/admin" },
   ];
 
   const isActive = (path: string) => {

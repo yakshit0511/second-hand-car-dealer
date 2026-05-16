@@ -71,6 +71,7 @@ export default function Footer() {
           <div className="flex space-x-6">
             <Link href="#" className="text-sm text-muted hover:text-gold transition-colors">Privacy Policy</Link>
             <Link href="#" className="text-sm text-muted hover:text-gold transition-colors">Terms of Service</Link>
+            <Link href="/admin" className="text-sm text-gold hover:text-white transition-colors font-bold">Admin Login</Link>
           </div>
         </div>
       </div>

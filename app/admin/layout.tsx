@@ -2,7 +2,8 @@
 
 import { useState } from "react";
 import Link from "next/link";
-import { usePathname } from "next/navigation";
+import { usePathname, useRouter } from "next/navigation";
+import toast from "react-hot-toast";
 
 const navLinks = [
   { href: "/admin", label: "Dashboard", icon: "📊" },
@@ -15,6 +16,20 @@ const navLinks = [
 
 function Sidebar({ onClose }: { onClose?: () => void }) {
   const pathname = usePathname();
+  const router = useRouter();
+
+  const handleLogout = async () => {
+    try {
+      const res = await fetch("/api/admin/logout", { method: "POST" });
+      if (res.ok) {
+        toast.success("Logged out successfully");
+        router.push("/admin/login");
+        router.refresh();
+      }
+    } catch (error) {
+      toast.error("Failed to logout");
+    }
+  };
 
   return (
     <div className="flex flex-col h-full bg-[#111111] w-60">
@@ -50,7 +65,13 @@ function Sidebar({ onClose }: { onClose?: () => void }) {
 
       {/* Bottom */}
       <div className="px-5 py-5 border-t border-[#2A2A2A] space-y-3">
-        <Link href="/" className="flex items-center gap-2 text-muted hover:text-gold text-sm transition-colors">
+        <button 
+          onClick={handleLogout}
+          className="w-full flex items-center gap-2 text-red-400 hover:text-red-300 text-sm transition-colors py-2"
+        >
+          <span>🚪</span> Logout
+        </button>
+        <Link href="/" className="flex items-center gap-2 text-muted hover:text-gold text-sm transition-colors pt-2 border-t border-[#2A2A2A]/50">
           <span>←</span> Back to Website
         </Link>
         <p className="text-[#444] text-xs">AutoNova Admin v1.0</p>

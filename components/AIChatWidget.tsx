@@ -42,11 +42,17 @@ export default function AIChatWidget() {
       });
 
       const data = await res.json();
-      if (data.error) throw new Error(data.error);
+      if (!res.ok || data.error) {
+        throw new Error(data.error || "Failed to get AI response");
+      }
 
       setMessages(prev => [...prev, { role: "assistant", content: data.message }]);
-    } catch (error) {
-      setMessages(prev => [...prev, { role: "assistant", content: "Sorry, I'm having trouble connecting right now. Please try again later." }]);
+    } catch (error: any) {
+      console.error("Chat Error:", error);
+      setMessages(prev => [...prev, { 
+        role: "assistant", 
+        content: error.message || "Sorry, I'm having trouble connecting right now. Please try again later." 
+      }]);
     } finally {
       setIsLoading(false);
     }

@@ -8,6 +8,7 @@ import Footer from "@/components/Footer";
 import connectDB from "@/lib/mongodb";
 import Car from "@/models/Car";
 import { ICar } from "@/types/car";
+import Link from "next/link";
 
 export const dynamic = "force-dynamic";
 export const revalidate = 0;
@@ -35,6 +36,21 @@ export default async function Home() {
       <HowItWorks />
       <WhyChooseUs />
       <Newsletter />
+      
+      {/* Admin Access Section */}
+      <section className="py-12 bg-[#0A0A0A] border-t border-gold/10">
+        <div className="max-w-7xl mx-auto px-4 text-center">
+          <p className="text-muted text-sm mb-4">Authorized personnel only</p>
+          <Link 
+            href="/admin" 
+            className="inline-flex items-center gap-2 text-gold hover:text-white transition-all group font-heading text-lg"
+          >
+            <span>🔐 Admin Login</span>
+            <span className="transform transition-transform group-hover:translate-x-1">→</span>
+          </Link>
+        </div>
+      </section>
+
       <Footer />
     </main>
   );
