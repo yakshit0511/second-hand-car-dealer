@@ -47,11 +47,12 @@ export default function AIChatWidget() {
       }
 
       setMessages(prev => [...prev, { role: "assistant", content: data.message }]);
-    } catch (error: any) {
+    } catch (error: unknown) {
       console.error("Chat Error:", error);
+      const errorMessage = error instanceof Error ? error.message : "Sorry, I'm having trouble connecting right now. Please try again later.";
       setMessages(prev => [...prev, { 
         role: "assistant", 
-        content: error.message || "Sorry, I'm having trouble connecting right now. Please try again later." 
+        content: errorMessage 
       }]);
     } finally {
       setIsLoading(false);

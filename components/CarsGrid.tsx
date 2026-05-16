@@ -86,7 +86,7 @@ export default function CarsGrid({
   }, [make, fuelType, transmission, minPrice, maxPrice, search, sortBy]);
 
   const filteredAndSortedCars = useMemo(() => {
-    let result = initialCars.filter((car) => {
+    const result = initialCars.filter((car) => {
       let match = true;
       if (make !== "All" && car.make !== make) match = false;
       if (fuelType !== "All" && car.fuelType !== fuelType) match = false;
@@ -134,13 +134,7 @@ export default function CarsGrid({
     return filters;
   }, [make, fuelType, transmission, search]);
 
-  const toggleCompare = (id: string) => {
-    setCompareIds(prev => {
-      if (prev.includes(id)) return prev.filter(i => i !== id);
-      if (prev.length < 2) return [...prev, id];
-      return [prev[1], id]; // Replace oldest if more than 2
-    });
-  };
+
 
   const compareCars = initialCars.filter(c => compareIds.includes(c._id));
 
@@ -376,8 +370,8 @@ export default function CarsGrid({
             <div className="flex items-center gap-4">
               <div className="flex -space-x-3">
                 {compareCars.map(c => (
-                  <div key={c._id} className="w-12 h-12 rounded-lg border-2 border-gold overflow-hidden bg-background">
-                    <img src={c.images[0]} alt={c.model} className="w-full h-full object-cover" />
+                  <div key={c._id} className="relative w-12 h-12 rounded-lg border-2 border-gold overflow-hidden bg-background">
+                    <Image src={c.images[0]} alt={c.model} fill className="object-cover" />
                   </div>
                 ))}
                 {compareIds.length === 1 && (

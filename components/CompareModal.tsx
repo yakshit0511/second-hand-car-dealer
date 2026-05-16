@@ -1,6 +1,7 @@
 "use client";
 
 import { ICar } from "@/types/car";
+import Image from "next/image";
 
 interface CompareModalProps {
   cars: ICar[];
@@ -52,7 +53,7 @@ export default function CompareModal({ cars, onClose }: CompareModalProps) {
                   <th key={car._id} className="py-4 px-4 w-3/8">
                     <div className="flex flex-col items-center">
                       <div className="relative w-32 h-20 rounded-lg overflow-hidden mb-3 border border-[#2A2A2A]">
-                        <img src={car.images[0]} alt={car.model} className="object-cover w-full h-full" />
+                        <Image src={car.images[0]} alt={car.model} fill className="object-cover" />
                       </div>
                       <span className="text-primary font-bold text-center leading-tight">
                         {car.year} {car.make}<br/>{car.model}
@@ -66,7 +67,7 @@ export default function CompareModal({ cars, onClose }: CompareModalProps) {
               {specs.map((spec) => (
                 <tr key={spec.label} className="border-b border-[#2A2A2A] hover:bg-white/5 transition-colors">
                   <td className="py-4 px-4 text-muted font-medium">{spec.label}</td>
-                  {cars.map((car: any) => (
+                  {cars.map((car: ICar) => (
                     <td key={car._id} className="py-4 px-4 text-center text-primary font-medium">
                       {spec.format ? spec.format(car[spec.key]) : (car[spec.key] || "—")}
                     </td>

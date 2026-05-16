@@ -31,8 +31,9 @@ export default function AdminLoginPage() {
       toast.success("Welcome back, Admin!");
       router.push("/admin");
       router.refresh();
-    } catch (error: any) {
-      toast.error(error.message);
+    } catch (error: unknown) {
+      const errorMessage = error instanceof Error ? error.message : "Login failed";
+      toast.error(errorMessage);
     } finally {
       setLoading(false);
     }
