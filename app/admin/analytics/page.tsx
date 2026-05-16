@@ -3,6 +3,7 @@
 export const dynamic = "force-dynamic";
 
 import { useEffect, useState } from "react";
+import Image from "next/image";
 import {
   LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer,
   BarChart, Bar, PieChart, Pie, Cell, Legend
@@ -10,8 +11,15 @@ import {
 
 const COLORS = ["#C9A84C", "#0088FE", "#00C49F", "#FFBB28", "#FF8042"];
 
+interface AnalyticsData {
+  enquiriesByDate: { date: string, count: number }[];
+  fuelTypeData: { name: string, value: number }[];
+  priceRangeData: { range: string, count: number }[];
+  mostViewed: { name: string, views: number, image: string }[];
+}
+
 export default function AnalyticsPage() {
-  const [data, setData] = useState<any>(null);
+  const [data, setData] = useState<AnalyticsData | null>(null);
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
@@ -29,7 +37,7 @@ export default function AnalyticsPage() {
     fetchAnalytics();
   }, []);
 
-  if (loading) return (
+  if (loading || !data) return (
     <div className="space-y-8 animate-pulse">
       <div className="h-10 w-48 bg-[#1A1A1A] rounded" />
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
@@ -78,7 +86,7 @@ export default function AnalyticsPage() {
                   paddingAngle={5}
                   dataKey="value"
                 >
-                  {data.fuelTypeData.map((entry: any, index: number) => (
+                  {data.fuelTypeData.map((_entry: unknown, index: number) => (
                     <Cell key={`cell-${index}`} fill={COLORS[index % COLORS.length]} />
                   ))}
                 </Pie>
@@ -109,10 +117,10 @@ export default function AnalyticsPage() {
         <div className="bg-[#1A1A1A] border border-[#2A2A2A] rounded-2xl p-6 shadow-xl">
           <h2 className="text-lg font-heading text-gold mb-6">Most Viewed Vehicles</h2>
           <div className="space-y-4">
-            {data.mostViewed.map((car: any, idx: number) => (
+            {data.mostViewed.map((car, idx: number) => (
               <div key={idx} className="flex items-center gap-4">
                 <div className="relative w-12 h-10 rounded overflow-hidden flex-shrink-0">
-                  <img src={car.image} alt={car.name} className="object-cover w-full h-full" />
+                  <Image src={car.image} alt={car.name} fill className="object-cover" />
                 </div>
                 <div className="flex-1">
                   <div className="flex justify-between text-xs mb-1">

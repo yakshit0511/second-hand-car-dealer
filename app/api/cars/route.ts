@@ -23,6 +23,7 @@ export async function GET(request: Request) {
       return NextResponse.json(cars, { headers: { "Content-Type": "application/json" } });
     }
 
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
     const query: any = {};
     
     // Add featured filter

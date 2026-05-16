@@ -1,7 +1,7 @@
 import type { Metadata } from "next";
 import { Playfair_Display, DM_Sans } from "next/font/google";
 import "./globals.css";
-import WhatsAppButton from "@/components/WhatsAppButton";
+
 import ScrollToTop from "@/components/ScrollToTop";
 
 const playfair = Playfair_Display({

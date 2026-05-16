@@ -26,7 +26,7 @@ function Sidebar({ onClose }: { onClose?: () => void }) {
         router.push("/admin/login");
         router.refresh();
       }
-    } catch (error) {
+    } catch {
       toast.error("Failed to logout");
     }
   };

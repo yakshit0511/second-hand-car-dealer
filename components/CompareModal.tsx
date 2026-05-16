@@ -69,7 +69,10 @@ export default function CompareModal({ cars, onClose }: CompareModalProps) {
                   <td className="py-4 px-4 text-muted font-medium">{spec.label}</td>
                   {cars.map((car: ICar) => (
                     <td key={car._id} className="py-4 px-4 text-center text-primary font-medium">
-                      {spec.format ? spec.format(car[spec.key]) : (car[spec.key] || "—")}
+                      {spec.format 
+                        // eslint-disable-next-line @typescript-eslint/no-explicit-any
+                        ? spec.format(car[spec.key as keyof ICar] as any) 
+                        : (car[spec.key as keyof ICar] || "—")}
                     </td>
                   ))}
                 </tr>

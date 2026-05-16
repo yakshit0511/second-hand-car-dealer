@@ -65,7 +65,7 @@ Tech Stack: Next.js 14, MongoDB Atlas, Tailwind CSS, Vercel`;
           {items.map((item) => (
             <label key={item.key} className="flex items-center gap-4 cursor-pointer group">
               <div 
-                onClick={() => toggle(item.key as any)}
+                onClick={() => toggle(item.key as keyof typeof checklist)}
                 className={`w-6 h-6 rounded border flex items-center justify-center transition-all ${
                   checklist[item.key as keyof typeof checklist] 
                     ? "bg-gold border-gold text-background" 
